@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Feng Shui Check — Room Layout</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a0f0c;--ink-s:#121a15;--ink-m:#1e2e22;--ink-l:#2a4a2a;
+  --sun:#e8a020;--sun-d:#7a5a1a;
+  --jade:#3d7a6a;--jade-l:#5aaa94;
+  --red:#8c1f1f;--red-l:#c43030;
+  --txt:#d8ecd8;--txt-d:#5a7a5a;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+.hidden{display:none!important}
+html,body{height:100vh;height:100dvh}
+body{background:var(--ink);font-family:'Inter',sans-serif;color:var(--txt);
+  display:flex;flex-direction:column;overflow:hidden}
+.hdr,.tabs{position:relative;z-index:5}
+
+/* HEADER */
+.hdr{height:44px;background:var(--ink-s);border-bottom:1px solid var(--ink-l);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 12px;flex-shrink:0}
+.hdr-title{font-family:'Noto Serif',serif;font-size:0.76rem;color:var(--txt)}
+.hdr-room{color:var(--sun);font-weight:600}
+.hdr-badge{background:#1e3a1e;border:1px solid var(--ink-l);border-radius:3px;
+  padding:2px 5px;font-size:0.52rem;color:#5aaa5a;letter-spacing:0.08em;
+  text-transform:uppercase;font-weight:600;margin-left:6px}
+.hdr-chi{background:var(--ink-m);border-radius:4px;padding:3px 9px;
+  font-size:0.64rem;color:var(--txt-d)}
+.hdr-chi b{color:var(--sun);font-size:0.9rem;margin-left:4px}
+.hdr-help{background:var(--ink-m);border:1px solid var(--ink-l);border-radius:50%;
+  width:22px;height:22px;display:flex;align-items:center;justify-content:center;
+  font-size:0.7rem;color:var(--txt-d);cursor:pointer;margin-left:8px;flex-shrink:0;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+
+/* ── HELP / FAQ MODAL ────────────────────────────────────────────── */
+.help-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.help-overlay.hidden{display:none!important}
+.help-sheet{background:var(--ink-s);border:1px solid var(--ink-m);border-radius:14px 14px 0 0;
+  width:100%;max-width:640px;max-height:82vh;display:flex;flex-direction:column;overflow:hidden}
+.help-hdr{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 14px;border-bottom:1px solid var(--ink-m);flex-shrink:0}
+.help-hdr h2{font-family:'Noto Serif',serif;font-size:0.82rem;color:var(--sun)}
+.help-close{background:transparent;border:none;color:var(--txt-d);font-size:1.1rem;
+  cursor:pointer;padding:0 4px;touch-action:manipulation}
+.help-body{overflow-y:auto;padding:12px 14px;-webkit-overflow-scrolling:touch}
+.faq-item{margin-bottom:12px}
+.faq-q{font-size:0.72rem;font-weight:600;color:#8aaa5a;margin-bottom:4px;
+  display:flex;gap:6px}
+.faq-a{font-size:0.68rem;color:var(--txt-d);line-height:1.55}
+.faq-a b{color:var(--txt)}
+
+/* TABS */
+.tabs{display:flex;background:var(--ink-s);border-bottom:1px solid var(--ink-m);flex-shrink:0}
+.tab{flex:1;padding:8px 4px 6px;font-size:0.65rem;font-weight:500;color:var(--txt-d);
+  text-align:center;cursor:pointer;border-bottom:2px solid transparent;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.tab.on{color:var(--sun);border-bottom-color:var(--sun)}
+.tab i{font-size:0.95rem;display:block;margin-bottom:1px;font-style:normal}
+
+/* VIEWS */
+.view{display:none;flex-direction:column;flex:1;min-height:0}
+.view.on{display:flex}
+
+/* ── FURNITURE VIEW ──────────────────────────────────────────────── */
+.rooms-view{background:var(--ink);padding:8px;gap:6px;overflow-y:auto}
+
+.sec-lbl2{font-family:'Noto Serif',serif;font-size:0.56rem;letter-spacing:0.13em;
+  text-transform:uppercase;color:#3a6a3a;flex-shrink:0}
+
+/* Room type selector — 3x2 grid of room categories */
+.room-sel{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;flex-shrink:0}
+.room-btn{background:var(--ink-s);border:2px solid var(--ink-m);border-radius:7px;
+  padding:6px 2px 5px;display:flex;flex-direction:column;align-items:center;gap:2px;
+  cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:rgba(232,160,32,0.2)}
+.room-btn.on{border-color:var(--sun);background:var(--ink-m)}
+.room-btn-em{font-size:1.05rem;pointer-events:none}
+.room-btn-name{font-size:0.5rem;color:var(--txt-d);pointer-events:none;text-align:center}
+.room-btn.on .room-btn-name{color:var(--sun)}
+
+.info-strip{background:var(--ink-m);border-radius:7px;border:1px solid var(--sun-d);
+  padding:8px 10px;flex-shrink:0}
+.info-strip.hidden{display:none!important}
+.info-name{font-family:'Noto Serif',serif;font-size:0.72rem;color:var(--sun);font-weight:700;margin-bottom:2px}
+.info-desc{font-size:0.62rem;color:#6a8a6a;line-height:1.4}
+
+.hint{text-align:center;font-size:0.6rem;color:var(--txt-d);font-style:italic;flex-shrink:0}
+
+/* Furniture cards — 3 columns fits door + window + 4 pieces */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;flex-shrink:0}
+.pc{background:var(--ink-s);border:2px solid var(--ink-m);border-radius:8px;
+  padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:grab;-webkit-tap-highlight-color:rgba(232,160,32,0.2);
+  touch-action:none;user-select:none}
+.pc.on{border-color:var(--sun);background:var(--ink-m)}
+.pc-em{font-size:1.5rem;line-height:1;pointer-events:none}
+.pc-name{font-size:0.58rem;color:var(--txt);font-weight:500;text-align:center;
+  line-height:1.2;pointer-events:none}
+.pc-chi{font-size:0.5rem;color:var(--txt-d);text-align:center;pointer-events:none;text-transform:capitalize}
+
+/* ── LAYOUT VIEW ─────────────────────────────────────────────────── */
+.grid-view{background:#e8f2e0;align-items:center;justify-content:flex-start;
+  padding:8px;gap:6px;position:relative;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.size-bar{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;
+  background:var(--ink-s);border:1px solid var(--ink-m);border-radius:7px;
+  padding:6px 10px;flex-shrink:0;width:100%}
+.size-fld{display:flex;align-items:center;gap:4px}
+.size-fld label{font-size:0.58rem;color:var(--txt-d)}
+.size-fld input{width:48px;background:var(--ink-m);border:1px solid var(--ink-l);
+  border-radius:4px;color:var(--txt);font-size:0.68rem;padding:4px 3px;text-align:center;
+  font-family:'Inter',sans-serif}
+.size-fld input:focus{outline:1px solid var(--sun);border-color:var(--sun)}
+.size-apply{background:var(--ink-m);border:1px solid #3a6a2a;color:#8aaa5a;
+  font-size:0.6rem;padding:5px 9px;border-radius:5px;cursor:pointer;
+  font-family:'Inter',sans-serif;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.size-note{width:100%;text-align:center;font-size:0.52rem;color:var(--txt-d);font-style:italic}
+.dir-pill{border-radius:10px;padding:3px 10px;font-size:0.58rem;font-weight:500;flex-shrink:0}
+.dir-cool{background:#1e2e3a;border:1px solid #2a4a6a;color:#6aaacc}
+.dir-warm{background:#2a3a0a;border:1px solid #4a6a1a;color:#aacc5a}
+.grid-frame{border:2px solid #7a9a6a;box-shadow:0 0 0 1px #a0c070,0 3px 12px rgba(0,0,0,0.2);flex-shrink:0}
+#grid{display:grid;background:#b8cca8;gap:1px}
+.cell{display:flex;align-items:center;justify-content:center;position:relative;
+  cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:rgba(180,140,40,0.3)}
+.cell.drag-over{outline:2px solid var(--sun);outline-offset:-2px;background:rgba(232,160,32,0.25)!important}
+.cell[data-z="south"]{background:#ddeaf5}
+.cell[data-z="north"]{background:#f5f0dd}
+.cell[data-z="east"]{background:#ddeadd}
+.cell[data-z="west"]{background:#e8e8e8}
+.cell[data-z="centre"]{background:#eaeee0}
+.cell[data-z="northeast"]{background:#e8eed8}
+.cell[data-z="northwest"]{background:#e0e8e0}
+.cell[data-z="southeast"]{background:#d8eae0}
+.cell[data-z="southwest"]{background:#eeeae0}
+.tile{border-radius:3px;display:flex;align-items:center;justify-content:center;
+  position:relative;box-shadow:0 1px 4px rgba(0,0,0,0.2);touch-action:none;cursor:grab}
+.chi-dot{position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;
+  border:1px solid rgba(0,0,0,0.15);opacity:0.7;box-shadow:0 0 2px rgba(0,0,0,0.15)}
+.chi-dot.good{background:var(--jade-l)}
+.chi-dot.bad{background:var(--red-l)}
+.chi-dot.neu{background:var(--sun)}
+.grid-hint{font-size:0.57rem;color:#6a8a5a;font-style:italic;text-align:center;flex-shrink:0}
+.sel-bar{background:var(--ink-s);border:1px solid var(--sun-d);border-radius:6px;
+  padding:5px 10px;display:flex;align-items:center;gap:6px;font-size:0.65rem;
+  color:var(--txt);flex-shrink:0;align-self:center}
+.sel-bar.hidden{display:none!important}
+.sel-x{background:transparent;border:none;color:var(--txt-d);font-size:1rem;
+  cursor:pointer;padding:0 0 0 4px;touch-action:manipulation}
+
+.compass-wrap{position:absolute;top:8px;right:8px}
+.compass-wrap svg{width:36px;height:36px}
+
+.bagua-btn{position:absolute;bottom:8px;left:8px;background:var(--ink-s);
+  border:1px solid var(--ink-m);border-radius:4px;padding:4px 8px;
+  font-size:0.58rem;color:var(--txt-d);cursor:pointer;touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent}
+
+/* ── ANALYSIS VIEW ───────────────────────────────────────────────── */
+.scores-view{background:var(--ink);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px;gap:10px}
+
+.score-hero{background:var(--ink-s);border:1px solid var(--ink-m);border-radius:8px;
+  padding:14px;display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0}
+.score-big{font-family:'Noto Serif',serif;font-size:2.8rem;font-weight:700;color:var(--sun);line-height:1}
+.score-lbl{font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--txt-d)}
+.score-grade{font-size:0.76rem;font-weight:600;margin-top:2px}
+
+.sec{flex-shrink:0}
+.sec-lbl{font-family:'Noto Serif',serif;font-size:0.58rem;letter-spacing:0.14em;
+  text-transform:uppercase;color:#3a6a3a;margin-bottom:5px}
+.bar-row{display:flex;flex-direction:column;gap:3px;margin-bottom:7px}
+.bar-top{display:flex;justify-content:space-between}
+.bar-n{font-size:0.65rem;color:#8a9a8a}.bar-v{font-size:0.65rem;font-weight:600;color:var(--sun)}
+.bar-track{height:4px;background:var(--ink-m);border-radius:2px;overflow:hidden}
+.bar-fill{height:100%;border-radius:2px;transition:width 0.5s ease}
+
+.el-chips{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.el-chip{background:var(--ink-s);border:1px solid var(--ink-m);border-radius:4px;
+  padding:5px 7px;display:flex;align-items:center;gap:4px}
+.el-dot2{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.el-cn{font-size:0.6rem;color:var(--txt);flex:1}
+.el-cc{font-size:0.65rem;font-weight:700;color:var(--sun)}
+
+.fb-list{display:flex;flex-direction:column;gap:4px}
+.fb{border-radius:4px;padding:7px 9px;font-size:0.65rem;line-height:1.45;
+  border-left:2px solid transparent;background:var(--ink-s)}
+.fb.good{border-color:var(--jade);color:#8acfbe}
+.fb.bad{border-color:var(--red);color:#cf9090}
+.fb.tip{border-color:#3a6a3a;color:#8aaa6a}
+
+.au-note{background:var(--ink-s);border:1px solid #1e3a1e;border-radius:6px;
+  padding:8px 10px;font-size:0.63rem;color:#4a7a4a;line-height:1.5}
+.au-note b{color:#5aaa5a;display:block;margin-bottom:2px}
+
+.bagua-g{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.bagua-c{background:var(--ink-s);border:1px solid var(--ink-m);border-radius:3px;padding:5px 4px;text-align:center}
+.bagua-c.warm{border-color:#3a4a1a}.bagua-c.cool{border-color:#1a3a4a}
+.bagua-dir{font-size:0.55rem;color:#3a6a3a}.bagua-el{font-size:0.75rem;margin:1px 0}
+.bagua-life{font-size:0.52rem;color:#2a4a2a}
+
+/* ACTION BAR */
+.action-bar{background:var(--ink-s);border-top:1px solid var(--ink-m);
+  padding:7px 10px;display:flex;gap:7px;flex-shrink:0}
+.btn{flex:1;background:transparent;border:1px solid var(--ink-m);color:var(--txt-d);
+  font-size:0.68rem;padding:9px;border-radius:6px;cursor:pointer;
+  font-family:'Inter',sans-serif;touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent}
+.btn.pri{border-color:#3a6a2a;color:#8aaa5a}
+
+/* ── BAZI CHART TAB ──────────────────────────────────────────────── */
+.chart-view{background:var(--ink);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px;gap:10px}
+
+.paywall{background:var(--ink-s);border:1px solid var(--sun-d);border-radius:9px;
+  padding:20px 16px;text-align:center;flex-shrink:0}
+.paywall-em{font-size:1.8rem;margin-bottom:6px}
+.paywall-title{font-family:'Noto Serif',serif;font-size:0.86rem;color:var(--sun);
+  font-weight:700;margin-bottom:6px}
+.paywall-desc{font-size:0.66rem;color:#6a8a6a;line-height:1.55;margin-bottom:14px}
+.paywall-price{font-size:0.6rem;color:var(--txt-d);margin-bottom:10px}
+.unlock-btn{background:linear-gradient(135deg,#c8912a,#e8a020);border:none;
+  color:#1a1206;font-weight:700;font-size:0.72rem;padding:10px 22px;border-radius:20px;
+  cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.paywall-demo{font-size:0.54rem;color:var(--txt-d);margin-top:10px;font-style:italic}
+
+.bazi-input{background:var(--ink-s);border:1px solid var(--ink-m);border-radius:8px;
+  padding:12px;flex-shrink:0}
+.bazi-input h3{font-family:'Noto Serif',serif;font-size:0.7rem;color:#8aaa5a;margin-bottom:8px}
+.bazi-row{display:flex;gap:6px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.bazi-row label{font-size:0.6rem;color:var(--txt-d)}
+.bazi-row input[type=number]{width:64px;background:var(--ink-m);border:1px solid var(--ink-l);
+  border-radius:4px;color:var(--txt);font-size:0.7rem;padding:5px;text-align:center}
+.bazi-calc-btn{background:var(--ink-m);border:1px solid #3a6a2a;color:#8aaa5a;
+  font-size:0.65rem;padding:7px 14px;border-radius:5px;cursor:pointer;touch-action:manipulation}
+
+.chart-out{background:var(--ink-s);border:1px solid var(--ink-m);border-radius:8px;
+  padding:12px;flex-shrink:0;font-size:0.68rem}
+.chart-out .cline{display:flex;justify-content:space-between;padding:4px 0;
+  border-bottom:1px solid var(--ink-m)}
+.chart-out .cline:last-child{border-bottom:none}
+.chart-out .ck{color:var(--txt-d)}
+.chart-out .cv{color:var(--txt);font-weight:600}
+
+.chart-elgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:8px}
+.chart-elbox{background:var(--ink-m);border-radius:4px;padding:5px 2px;text-align:center}
+.chart-elbox .n{font-size:0.52rem;color:var(--txt-d)}
+.chart-elbox .v{font-size:0.78rem;color:var(--sun);font-weight:700}
+
+.chart-advice{border-radius:6px;padding:9px 11px;font-size:0.66rem;line-height:1.5;
+  border-left:2px solid transparent;background:var(--ink-s);margin-top:8px}
+.chart-advice.weak{border-color:var(--jade);color:#8acfbe}
+.chart-advice.strong{border-color:var(--sun-d);color:#d8b878}
+.chart-advice .pill{display:inline-block;background:var(--ink-m);border-radius:4px;
+  padding:3px 7px;margin:4px 4px 0 0;font-size:0.62rem;color:var(--txt)}
+.chart-advice .pill.placed{opacity:0.45;text-decoration:line-through}
+
+/* ── 3x3 BAGUA GRID PATTERN (reused for Between-Rooms puzzles below) ── */
+.zonepick-g{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:4px;aspect-ratio:1/1;max-width:220px;margin:0 auto}
+.zonepick-c{background:var(--ink-s);border:1px solid var(--ink-m);border-radius:5px;
+  min-height:34px;height:100%;display:flex;align-items:center;justify-content:center;
+  text-align:center;font-size:0.62rem;color:var(--txt-d);cursor:pointer;
+  touch-action:manipulation;-webkit-tap-highlight-color:rgba(232,160,32,0.2)}
+.zonepick-c.sel{border-color:var(--sun);background:var(--ink-m);color:var(--sun);font-weight:600}
+.zonepick-c.disabled{cursor:default;opacity:0.35;background:transparent;border-style:dashed}
+.info-ic{display:inline-block;color:var(--sun-d);font-size:0.62rem;cursor:pointer;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;margin-left:2px}
+.inline-tip{background:var(--ink-m);border:1px solid var(--ink-l);border-radius:6px;
+  padding:7px 9px;font-size:0.58rem;color:#9ab89a;line-height:1.5;margin:5px 0 8px}
+
+/* ── PUZZLES TAB ─────────────────────────────────────────────────── */
+.puzzle-view{background:var(--ink);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px;gap:8px}
+.puzzle-intro{font-size:0.6rem;color:#6a8a6a;line-height:1.5;flex-shrink:0}
+.puzzle-cat-toggle{display:flex;gap:6px;flex-shrink:0}
+.puzzle-cat-btn{flex:1;background:var(--ink-s);border:1px solid var(--ink-m);color:var(--txt-d);
+  font-size:0.62rem;padding:8px 4px;border-radius:7px;cursor:pointer;touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;font-family:'Inter',sans-serif}
+.puzzle-cat-btn.on{border-color:var(--sun);color:var(--sun);background:var(--ink-m);font-weight:600}
+.puzzle-progress{font-size:0.58rem;color:var(--sun);font-weight:600;flex-shrink:0}
+.puzzle-card{background:var(--ink-s);border:1px solid var(--ink-m);border-radius:9px;
+  padding:10px;margin-bottom:8px;display:flex;flex-direction:column;gap:6px}
+.puzzle-card.solved{border-color:#3a6a2a}
+.puzzle-card-top{display:flex;align-items:center;gap:9px}
+.puzzle-card-em{font-size:1.3rem;flex-shrink:0}
+.puzzle-card-title{font-family:'Noto Serif',serif;font-size:0.72rem;color:var(--txt);font-weight:700}
+.puzzle-card-room{font-size:0.56rem;color:var(--txt-d);margin-top:1px}
+.puzzle-play-btn{background:linear-gradient(135deg,#c8912a,#e8a020);border:none;
+  color:#1a1206;font-weight:700;font-size:0.66rem;padding:8px 14px;border-radius:7px;
+  cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+
+/* Banner shown in Layout/Analysis while a puzzle is active */
+.puzzle-banner{background:var(--ink-s);border:1px solid var(--sun-d);border-radius:8px;
+  padding:9px 11px;flex-shrink:0;width:100%}
+.puzzle-banner-title{font-family:'Noto Serif',serif;font-size:0.7rem;color:var(--sun);
+  font-weight:700;margin-bottom:3px}
+.puzzle-banner-prompt{font-size:0.62rem;color:#9ab89a;line-height:1.5;margin-bottom:6px}
+.puzzle-banner-actions{display:flex;gap:5px;flex-wrap:wrap}
+.puzzle-btn{background:var(--ink-m);border:1px solid var(--ink-l);color:var(--txt-d);
+  font-size:0.6rem;padding:6px 9px;border-radius:6px;cursor:pointer;touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;font-family:'Inter',sans-serif}
+.puzzle-btn.go{border-color:#3a6a2a;color:#8aaa5a}
+.puzzle-btn.warn{border-color:#6a3a1a;color:#c47a30}
+.puzzle-hint{background:var(--ink-m);border-radius:6px;padding:7px 9px;margin-top:6px;
+  font-size:0.6rem;color:#d8b878;line-height:1.5}
+
+/* Result panel shown in Analysis after checking a solution */
+.puzzle-result{border-radius:8px;padding:10px 12px;font-size:0.66rem;line-height:1.6;
+  margin-bottom:8px;flex-shrink:0;background:var(--ink-s);border:1px solid var(--ink-m);color:#cf9090}
+.puzzle-result.solved{border-color:#3a6a2a;color:#8acfbe}
+.puzzle-result .puzzle-btn{margin-top:6px}
+
+.bg-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);
+  gap:5px;aspect-ratio:1/1;max-width:260px;margin:10px auto;flex-shrink:0}
+.bg-cell{background:var(--ink-s);border:1px solid var(--ink-m);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;gap:4px;position:relative;
+  font-size:0.5rem;color:var(--txt-d);flex-wrap:wrap;padding:4px}
+.bg-cell.drag-over{outline:2px solid var(--sun);outline-offset:-2px;background:rgba(232,160,32,0.15)}
+.bg-cell .bg-lbl{position:absolute;bottom:2px;right:4px;font-size:0.46rem;color:var(--txt-d);opacity:0.7}
+.bg-cell .bg-door{position:absolute;top:2px;left:4px;font-size:0.8rem}
+.bg-piece{font-size:1.3rem;cursor:grab;touch-action:none;user-select:none;
+  -webkit-tap-highlight-color:transparent}
+.bg-piece.dragging-source{opacity:0.25}
+
+/* Drag-and-drop (used by both the furniture grid and the Between-Rooms grid) */
+.drag-ghost{position:fixed;z-index:1000;pointer-events:none;font-size:28px;
+  transform:translate(-50%,-50%);filter:drop-shadow(0 3px 6px rgba(0,0,0,0.4))}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div style="display:flex;align-items:center">
+    <span style="font-size:1.2rem;margin-right:7px">☀️</span>
+    <span class="hdr-title">Feng Shui Check <span class="hdr-room" id="hRoom"></span></span>
+    <span class="hdr-badge">🇦🇺 AU</span>
+  </div>
+  <div class="hdr-chi">Chi<b id="hChi">—</b></div>
+  <div class="hdr-help" onclick="toggleHelp()">?</div>
+</div>
+
+<!-- HELP / FAQ MODAL -->
+<div class="help-overlay hidden" id="helpOverlay" onclick="if(event.target===this)toggleHelp()">
+  <div class="help-sheet">
+    <div class="help-hdr">
+      <h2>☯ How to Play / FAQ</h2>
+      <button class="help-close" onclick="toggleHelp()">✕</button>
+    </div>
+    <div class="help-body">
+
+      <div class="faq-item">
+        <div class="faq-q">🪑 How do I place furniture?</div>
+        <div class="faq-a">Pick a room in the <b>Furniture</b> tab, tap a piece to select it, then tap a cell on the <b>Layout</b> grid to place it. Tap a placed tile to remove it. Start with the Door and the room's anchor piece (Bed, Sofa, Desk, etc).</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">🔥 Will adding 3 lamps make my Fire element stronger?</div>
+        <div class="faq-a"><b>No — it works against you.</b> Five-element balance is about <b>presence, not quantity</b>. One Fire piece already represents Fire chi in the room. Placing three doesn't triple the effect; it pushes that element into <b>excess</b>, and the score treats 3+ of the same element as a penalty ("Too much Fire — add water or metal to cool it"), not a bonus. If an element is missing, add <b>one</b> piece of it — don't stack several.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">☯ What is the Chi Harmony Score?</div>
+        <div class="faq-a">An average of four factors: <b>Energy Flow</b> (door/window placement), <b>Command Position</b> (is your anchor piece backed by a wall and able to see the door?), <b>Element Balance</b> (Five Elements present without excess), and <b>Conflict Avoidance</b> (room-specific clashes, like stove next to sink).</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">🧭 Why is North at the bottom of the grid?</div>
+        <div class="faq-a">This app uses <b>Southern Hemisphere orientation</b> for Australian users — North is sun-facing here, unlike the Northern Hemisphere convention. The compass, bagua zones, and all directional advice follow this.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">🎴 What does the Birth Chart tab do?</div>
+        <div class="faq-a">Once unlocked, enter your birth date to see your personal Five Element balance (based on classical Bazi 八字 calculation — year, month and day pillars). It shows your single <b>strongest</b> and <b>weakest</b> element only, and suggests specific furniture in your current room to help balance the weakest one. No birth time is needed.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">🚪 What's "command position"?</div>
+        <div class="faq-a">Your room's key piece (Bed, Sofa, Desk...) should have a solid wall behind it and a clear view of the door, without sitting directly in the door's line of sight. This is one of the oldest and most consistent feng shui principles across schools.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">🧩 What are the Puzzles?</div>
+        <div class="faq-a">Each puzzle loads a scene with one classic feng shui mistake already in place — like a bed lined up with the door, or a kitchen and bathroom sharing the same space. Find it, fix it by dragging things around, then check your solution. "Within a Room" puzzles use the same furniture grid as the Furniture/Layout tabs; "Between Rooms" puzzles use a simplified 3×3 map to work with room-to-room placement instead of individual furniture.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab on" id="tab0" onclick="goTab(0)"><i>🪑</i>Furniture</div>
+  <div class="tab"    id="tab1" onclick="goTab(1)"><i>📐</i>Layout</div>
+  <div class="tab"    id="tab2" onclick="goTab(2)"><i>☯</i>Analysis</div>
+  <div class="tab"    id="tab3" onclick="goTab(3)"><i>🎴</i>Chart</div>
+  <div class="tab"    id="tab4" onclick="goTab(4)"><i>🧩</i>Puzzles</div>
+</div>
+
+<!-- VIEW 0: FURNITURE -->
+<div class="view rooms-view on" id="v0">
+
+  <div class="sec-lbl2">Choose a Room</div>
+  <div class="room-sel" id="roomSel">
+    <div class="room-btn" data-room="bedroom" onclick="selectRoom('bedroom')"><div class="room-btn-em">🛏</div><div class="room-btn-name">Bedroom</div></div>
+    <div class="room-btn" data-room="living"  onclick="selectRoom('living')"><div class="room-btn-em">🛋</div><div class="room-btn-name">Living Room</div></div>
+    <div class="room-btn" data-room="office"  onclick="selectRoom('office')"><div class="room-btn-em">🖥</div><div class="room-btn-name">Office / Studio</div></div>
+    <div class="room-btn" data-room="dining"  onclick="selectRoom('dining')"><div class="room-btn-em">🍽</div><div class="room-btn-name">Dining Room</div></div>
+    <div class="room-btn" data-room="kitchen" onclick="selectRoom('kitchen')"><div class="room-btn-em">🍳</div><div class="room-btn-name">Kitchen</div></div>
+    <div class="room-btn" data-room="bathroom" onclick="selectRoom('bathroom')"><div class="room-btn-em">🚿</div><div class="room-btn-name">Bathroom</div></div>
+  </div>
+
+  <div class="info-strip hidden" id="infoCard">
+    <div class="info-name" id="icName"></div>
+    <div class="info-desc" id="icDesc"></div>
+  </div>
+
+  <div class="hint" id="hint"></div>
+
+  <div class="cards" id="cards"></div>
+
+</div>
+
+<!-- VIEW 1: LAYOUT -->
+<div class="view grid-view" id="v1">
+  <div class="puzzle-banner hidden" id="puzzleBannerLayout">
+    <div class="puzzle-banner-title" id="pbTitleL"></div>
+    <div class="puzzle-banner-prompt" id="pbPromptL"></div>
+    <div class="puzzle-banner-actions">
+      <button class="puzzle-btn" onclick="togglePuzzleHint()">💡 Hint</button>
+      <button class="puzzle-btn go" onclick="checkPuzzleSolution()">✓ Check Solution</button>
+      <button class="puzzle-btn warn" onclick="exitPuzzle()">✕ Exit</button>
+    </div>
+    <div class="puzzle-hint hidden" id="pbHintL"></div>
+  </div>
+  <div class="size-bar" id="sizeBar">
+    <div class="size-fld">
+      <label for="inLen">Length (m)</label>
+      <input type="number" id="inLen" min="1.5" max="12" step="0.5" value="3">
+    </div>
+    <div class="size-fld">
+      <label for="inWid">Width (m)</label>
+      <input type="number" id="inWid" min="1.5" max="12" step="0.5" value="3">
+    </div>
+    <button class="size-apply" onclick="applyRoomSize()">✓ Update Room</button>
+    <div class="size-note" id="sizeNote">1 grid square = 0.5m × 0.5m</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;width:100%;justify-content:center">
+    <div style="font-size:0.58rem;color:#6aaacc;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:0.1em">← E East</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div class="dir-pill dir-cool">🌡 South — cool / yin</div>
+      <div class="grid-frame"><div id="grid"></div></div>
+      <div class="dir-pill dir-warm">☀ North — sun-facing / yang</div>
+    </div>
+    <div style="font-size:0.58rem;color:#8a9a8a;writing-mode:vertical-rl;letter-spacing:0.1em">W West →</div>
+  </div>
+  <div class="sel-bar hidden" id="selBar">
+    <span id="selEm"></span>
+    <span id="selNm" style="font-size:0.66rem"></span>
+    <button class="sel-x" onclick="clearPick()">✕</button>
+  </div>
+  <div class="grid-hint">Tap grid to place · Tap tile to remove</div>
+
+  <div class="compass-wrap">
+    <svg viewBox="0 0 44 44" fill="none">
+      <circle cx="22" cy="22" r="20" stroke="#1e3a1e" stroke-width="1.2"/>
+      <polygon points="22,40 25,26 22,28 19,26" fill="#e8a020"/>
+      <polygon points="22,4  25,18 22,16 19,18" fill="#5a8a5a"/>
+      <polygon points="4,22  18,19 16,22 18,25" fill="#5a8a5a"/>
+      <polygon points="40,22 26,19 28,22 26,25" fill="#5a8a5a"/>
+      <circle cx="22" cy="22" r="3" fill="#c8912a"/>
+      <text x="22" y="43" text-anchor="middle" font-size="5.5" fill="#e8a020" font-family="serif" font-weight="700">N</text>
+      <text x="22" y="9"  text-anchor="middle" font-size="5"   fill="#5a8a5a" font-family="serif">S</text>
+      <text x="3"  y="24" text-anchor="middle" font-size="5"   fill="#5a8a5a" font-family="serif">E</text>
+      <text x="41" y="24" text-anchor="middle" font-size="5"   fill="#5a8a5a" font-family="serif">W</text>
+    </svg>
+  </div>
+  <button class="bagua-btn" onclick="toggleBagua()">☯ Zones</button>
+  <button class="bagua-btn" style="left:auto;right:8px" onclick="toggleDbg()">🐞 Debug Log</button>
+  <div id="dbgLog" class="hidden" style="position:absolute;left:4px;right:4px;bottom:44px;max-height:120px;overflow-y:auto;background:rgba(0,0,0,0.88);color:#8f8;font-size:9px;font-family:monospace;padding:5px 6px;border-radius:6px;z-index:20;line-height:1.5"></div>
+</div>
+
+<!-- VIEW 2: ANALYSIS -->
+<div class="view scores-view" id="v2">
+
+  <div class="puzzle-banner hidden" id="puzzleBannerAnalysis">
+    <div class="puzzle-banner-title" id="pbTitleA"></div>
+    <div class="puzzle-banner-actions">
+      <button class="puzzle-btn go" onclick="checkPuzzleSolution()">✓ Check Solution</button>
+      <button class="puzzle-btn warn" onclick="exitPuzzle()">✕ Exit</button>
+    </div>
+  </div>
+  <div class="puzzle-result hidden" id="puzzleResult"></div>
+
+  <div class="score-hero">
+    <div class="score-big" id="scoreNum">0</div>
+    <div class="score-lbl">Chi Harmony Score</div>
+    <div class="score-grade" id="scoreGrade" style="color:#2a4a2a">Place furniture to begin</div>
+  </div>
+
+  <div class="au-note">
+    <b>☀ Australian Feng Shui</b>
+    North is sun-facing in the Southern Hemisphere. North is at the <strong>bottom</strong> of the grid — matching how Australian architects orient interior layouts.
+  </div>
+
+  <div class="sec">
+    <div class="sec-lbl">Chi Flow Analysis</div>
+    <div class="bar-row"><div class="bar-top"><span class="bar-n">Energy Flow</span><span class="bar-v" id="bv-flow">—</span></div><div class="bar-track"><div class="bar-fill" id="bf-flow" style="width:0%;background:#3d7a6a"></div></div></div>
+    <div class="bar-row"><div class="bar-top"><span class="bar-n">Command Position</span><span class="bar-v" id="bv-cmd">—</span></div><div class="bar-track"><div class="bar-fill" id="bf-cmd" style="width:0%;background:#c8912a"></div></div></div>
+    <div class="bar-row"><div class="bar-top"><span class="bar-n">Element Balance</span><span class="bar-v" id="bv-bal">—</span></div><div class="bar-track"><div class="bar-fill" id="bf-bal" style="width:0%;background:#2a6a4a"></div></div></div>
+    <div class="bar-row"><div class="bar-top"><span class="bar-n">Conflict Avoidance</span><span class="bar-v" id="bv-con">—</span></div><div class="bar-track"><div class="bar-fill" id="bf-con" style="width:0%;background:#8c1f1f"></div></div></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-lbl">Five Elements 五行</div>
+    <div class="el-chips">
+      <div class="el-chip"><div class="el-dot2" style="background:#c43030"></div><div class="el-cn">Fire</div><div class="el-cc" id="ec-fire">0</div></div>
+      <div class="el-chip"><div class="el-dot2" style="background:#2a6aaa"></div><div class="el-cn">Water</div><div class="el-cc" id="ec-water">0</div></div>
+      <div class="el-chip"><div class="el-dot2" style="background:#3a7030"></div><div class="el-cn">Wood</div><div class="el-cc" id="ec-wood">0</div></div>
+      <div class="el-chip"><div class="el-dot2" style="background:#5a6a7a"></div><div class="el-cn">Metal</div><div class="el-cc" id="ec-metal">0</div></div>
+      <div class="el-chip"><div class="el-dot2" style="background:#8a6a2a"></div><div class="el-cn">Earth</div><div class="el-cc" id="ec-earth">0</div></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-lbl">Feng Shui Feedback</div>
+    <div class="fb-list" id="fbList"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-lbl">Bagua — Australian Orientation</div>
+    <div class="bagua-g">
+      <div class="bagua-c cool"><div class="bagua-dir">SE</div><div class="bagua-el">土</div><div class="bagua-life">Knowledge</div></div>
+      <div class="bagua-c cool"><div class="bagua-dir">S</div><div class="bagua-el">水</div><div class="bagua-life">Career</div></div>
+      <div class="bagua-c cool"><div class="bagua-dir">SW</div><div class="bagua-el">土</div><div class="bagua-life">Relationships</div></div>
+      <div class="bagua-c"><div class="bagua-dir">E</div><div class="bagua-el">木</div><div class="bagua-life">Family</div></div>
+      <div class="bagua-c"><div class="bagua-dir">中</div><div class="bagua-el">土</div><div class="bagua-life">Health</div></div>
+      <div class="bagua-c"><div class="bagua-dir">W</div><div class="bagua-el">金</div><div class="bagua-life">Creativity</div></div>
+      <div class="bagua-c warm"><div class="bagua-dir">NE</div><div class="bagua-el">金</div><div class="bagua-life">Helpful</div></div>
+      <div class="bagua-c warm"><div class="bagua-dir">N ☀</div><div class="bagua-el">火</div><div class="bagua-life">Fame</div></div>
+      <div class="bagua-c warm"><div class="bagua-dir">NW</div><div class="bagua-el">木</div><div class="bagua-life">Wealth</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- VIEW 3: BAZI BIRTH CHART -->
+<div class="view chart-view" id="v3">
+
+  <div class="paywall" id="paywall">
+    <div class="paywall-em">🎴</div>
+    <div class="paywall-title">Birth Chart Personalisation</div>
+    <div class="paywall-desc">
+      Everyone's birth chart carries its own unique Five Element balance.
+      Unlock this to see your personal element strengths and weaknesses,
+      and get furniture suggestions tailored to balance <em>your</em> chart —
+      on top of the standard room feng shui.
+    </div>
+    <div class="paywall-price">One-time unlock · unlocks your personal Birth Chart</div>
+    <button class="unlock-btn" onclick="unlockBazi()">🔓 Unlock Premium</button>
+    <div class="paywall-demo">Demo unlock — no real payment is processed in this build.</div>
+  </div>
+
+  <div class="bazi-input hidden" id="baziInputPanel">
+    <h3>Your Birth Date</h3>
+    <div class="bazi-row">
+      <label for="baziY">Year</label><input type="number" id="baziY" min="1900" max="2100" value="1990">
+      <label for="baziM">Month</label><input type="number" id="baziM" min="1" max="12" value="1">
+      <label for="baziD">Day</label><input type="number" id="baziD" min="1" max="31" value="1">
+    </div>
+    <button class="bazi-calc-btn" onclick="runBaziCalc()">☯ Calculate My Chart</button>
+    <div style="font-size:0.55rem;color:var(--txt-d);margin-top:6px;line-height:1.4">
+      Date-only chart (no birth time needed) — covers year, month and day pillars.
+      Recommendations show your single strongest and weakest element only, since
+      those are the two least affected by the missing hour pillar.
+    </div>
+  </div>
+
+  <div id="baziOutput"></div>
+
+</div>
+
+<!-- VIEW 4: PUZZLES -->
+<div class="view puzzle-view" id="v4">
+  <div class="sec-lbl" style="margin-bottom:2px">🧩 Feng Shui Puzzles</div>
+  <div class="puzzle-intro" id="puzzleIntro">
+    Each puzzle loads a scene with one classic feng shui mistake already in place. Find it,
+    fix it by dragging things around, then check your solution.
+  </div>
+
+  <div class="puzzle-cat-toggle">
+    <button class="puzzle-cat-btn on" id="pcatRoom" onclick="setPuzzleCategory('room')">🪑 Within a Room</button>
+    <button class="puzzle-cat-btn" id="pcatBetween" onclick="setPuzzleCategory('between')">🧭 Between Rooms</button>
+  </div>
+
+  <div id="puzzleBrowse">
+    <div class="puzzle-progress" id="puzzleProgress"></div>
+    <div id="puzzleList"></div>
+  </div>
+
+  <!-- Between-Rooms play area: self-contained, reuses the 3x3 bagua grid pattern -->
+  <div id="brPlayArea" class="hidden">
+    <div class="puzzle-banner">
+      <div class="puzzle-banner-title" id="brTitle"></div>
+      <div class="puzzle-banner-prompt" id="brPrompt"></div>
+      <div class="puzzle-banner-actions">
+        <button class="puzzle-btn" onclick="toggleBrHint()">💡 Hint</button>
+        <button class="puzzle-btn go" onclick="checkBetweenRoomSolution()">✓ Check Solution</button>
+        <button class="puzzle-btn warn" onclick="exitBetweenRoomPuzzle()">✕ Exit</button>
+      </div>
+      <div class="puzzle-hint hidden" id="brHint"></div>
+    </div>
+    <div class="bg-grid" id="bgGrid"></div>
+    <div class="puzzle-result hidden" id="brResult"></div>
+  </div>
+</div>
+
+<!-- ACTION BAR -->
+<div class="action-bar">
+  <button class="btn" onclick="clearGrid()">✕ Clear</button>
+</div>
+
+<script>
+// ── STRUCTURAL ELEMENTS (present in every room) ────────────────────
+const STRUCT={
+  door:{id:'door',name:'Door',emoji:'🚪',el:'earth',bg:'#28200c',
+    desc:'The mouth of chi for this room. In Australia, a north-facing door (bottom of grid) welcomes the most sunlight and yang energy into the space.'},
+  window:{id:'window',name:'Window',emoji:'🪟',el:'metal',bg:'#182028',
+    desc:'Where natural light and fresh chi enter. North-facing windows (bottom of grid) receive the most Australian sun; west-facing windows can overheat the room in the afternoon.'}
+};
+
+// ── ROOM TYPES & FURNITURE ──────────────────────────────────────────
+const ROOMS={
+  bedroom:{name:'Bedroom',emoji:'🛏',
+    hint:'Place the Door 🚪 and Bed 🛏 first — headboard to a solid wall, diagonal from the door.',
+    items:[
+      {id:'bed',name:'Bed',emoji:'🛏',el:'earth',bg:'#28200c',anchor:true,
+        desc:'The most important piece — command position: headboard against a solid wall, positioned diagonally from the door with a clear view of it. In Australia, avoid the hot western wall; north or east placement keeps mornings cool and calm.'},
+      {id:'wardrobe',name:'Wardrobe',emoji:'🗄️',el:'wood',bg:'#102010',
+        desc:"Large wood furniture stores and stabilises chi. Keep it away from the foot of the bed and clear of the door's swing."},
+      {id:'mirror',name:'Vanity Mirror',emoji:'🪞',el:'water',bg:'#10203d',
+        desc:'Reflective surfaces double energy — good for wealth, disruptive for sleep. Never let a mirror face the bed directly; reposition it or cover it at night.'},
+      {id:'nightstand',name:'Nightstand',emoji:'🕯️',el:'wood',bg:'#102010',
+        desc:'Anchors the bed with balance on at least one side. Keep the surface clear for calm, restful chi.'},
+      {id:'lampBed',name:'Bedside Lamp',emoji:'💡',el:'fire',bg:'#3d1010',
+        desc:"The bedroom's only fire accent — warm, soft light for winding down, and a gentle counterbalance to an otherwise earth-and-wood-heavy room."},
+      {id:'fountainBed',name:'Small Fountain',emoji:'🐠',el:'water',bg:'#10203d',
+        desc:'A second water accent for the room. Traditionally kept clear of the bed, since moving water can disturb restful stillness — better suited to a dresser or corner.'},
+      {id:'clockBed',name:'Wall Clock',emoji:'⏰',el:'metal',bg:'#182028',
+        desc:'A small, precise metal accent — adds structure to the room without adding bulk.'}
+    ]},
+  living:{name:'Living Room',emoji:'🛋',
+    hint:'Place the Door 🚪 and Sofa 🛋 first — back to a solid wall, angled to see the door.',
+    items:[
+      {id:'sofa',name:'Sofa',emoji:'🛋',el:'earth',bg:'#28200c',anchor:true,
+        desc:'The command piece of the living room. Back against a solid wall, angled to see the door without sitting directly in line with it — this is the heart of gathering chi.'},
+      {id:'tv',name:'TV / Media Unit',emoji:'📺',el:'fire',bg:'#3d1010',
+        desc:'An active fire-element focal point. Avoid placing it directly opposite the window, where glare and outward-flowing chi compete with the screen.'},
+      {id:'coffee',name:'Coffee Table',emoji:'🍵',el:'wood',bg:'#102010',
+        desc:'Keeps chi circulating between seating. Round or oval edges are gentler on flow than sharp corners pointed at the sofa.'},
+      {id:'bookshelf',name:'Bookshelf',emoji:'📚',el:'wood',bg:'#102010',
+        desc:'Grounding wood energy — best against a wall, not directly behind the sofa where overhead weight feels unsettling.'},
+      {id:'lampLiving',name:'Floor Lamp',emoji:'💡',el:'fire',bg:'#3d1010',
+        desc:"Warms a room that otherwise leans wood and earth — position it away from directly opposite the window to avoid competing brightness."},
+      {id:'fountainLiving',name:'Indoor Fountain',emoji:'🐠',el:'water',bg:'#10203d',
+        desc:'Living rooms are often missing water chi entirely — a small fountain invites flowing, prosperous energy. Keep it clear of the fire-element TV.'},
+      {id:'clockLiving',name:'Wall Clock',emoji:'⏰',el:'metal',bg:'#182028',
+        desc:"A light metal accent that adds structure to the room without competing with the sofa's earth energy."}
+    ]},
+  office:{name:'Office / Studio',emoji:'🖥',
+    hint:'Place the Door 🚪 and Desk 🖥 first — command position, facing the door.',
+    items:[
+      {id:'desk',name:'Desk',emoji:'🖥',el:'metal',bg:'#182028',anchor:true,
+        desc:'Command position is everything here: back to a solid wall, desk angled to face the door. Never sit with your back to the door — it undermines focus and authority.'},
+      {id:'chair',name:'Office Chair',emoji:'🪑',el:'wood',bg:'#102010',
+        desc:'Supports the sitter — a solid, high-backed chair builds stronger career chi than open or backless seating.'},
+      {id:'bookshelf2',name:'Bookshelf',emoji:'📚',el:'wood',bg:'#102010',
+        desc:'Good behind or beside the desk for support — avoid tall, heavy shelving directly above where you sit.'},
+      {id:'filing',name:'Filing Cabinet',emoji:'🗃️',el:'metal',bg:'#182028',
+        desc:'Keeps clutter contained — clutter is one of the fastest ways to stagnate chi in a workspace.'},
+      {id:'deskLamp',name:'Desk Lamp',emoji:'💡',el:'fire',bg:'#3d1010',
+        desc:'Active, focused fire chi right where you work — pairs well with the desk in the command position.'},
+      {id:'fountainOffice',name:'Desktop Fountain',emoji:'🐠',el:'water',bg:'#10203d',
+        desc:'Offices are usually missing water chi altogether — a small fountain supports career and cash-flow energy. Keep it off the desk itself, clear of electronics.'},
+      {id:'vaseOffice',name:'Ceramic Vase',emoji:'🏺',el:'earth',bg:'#28200c',
+        desc:'A grounding earth accent for an office that otherwise leans heavily on metal (desk, filing cabinet, window) — softens a hard, businesslike room.'}
+    ]},
+  dining:{name:'Dining Room',emoji:'🍽',
+    hint:'Place the Door 🚪 and Dining Table 🍽 first — keep the table off the door\u2019s direct line.',
+    items:[
+      {id:'table',name:'Dining Table',emoji:'🍽',el:'earth',bg:'#28200c',anchor:true,
+        desc:'A round or oval table encourages equal conversation and balanced chi among diners. Keep it out of direct line with the door — food visible from the entrance disperses wealth chi.'},
+      {id:'chairs',name:'Dining Chairs',emoji:'🪑',el:'wood',bg:'#102010',
+        desc:'Every seat should feel supported — place chairs snug around the table, none with its back to the door.'},
+      {id:'sideboard',name:'Sideboard',emoji:'🗄️',el:'earth',bg:'#28200c',
+        desc:"Storage that grounds the room — place against a wall, not directly behind a diner's chair."},
+      {id:'light',name:'Pendant Light',emoji:'💡',el:'fire',bg:'#3d1010',
+        desc:'A warm fire-element accent directly above the table activates and energises the meal.'},
+      {id:'plantDining',name:'Potted Plant',emoji:'🪴',el:'wood',bg:'#102010',
+        desc:'Living wood chi at the edge of the room — echoes the wood chairs for a fresher, more balanced dining space.'},
+      {id:'mirrorDining',name:'Wall Mirror',emoji:'🪞',el:'metal',bg:'#182028',
+        desc:'Positioned to reflect the dining table (never the door), a mirror symbolically doubles the abundance of a shared meal.'},
+      {id:'fountainDining',name:'Indoor Fountain',emoji:'🐠',el:'water',bg:'#10203d',
+        desc:'Dining rooms are usually missing water chi entirely — a small fountain in a corner brings flow and prosperity to gatherings.'}
+    ]},
+  kitchen:{name:'Kitchen',emoji:'🍳',
+    hint:'Place the Stove 🔥 first — never opposite or beside the Sink 🚰.',
+    items:[
+      {id:'stove',name:'Stove',emoji:'🔥',el:'fire',bg:'#3d1010',anchor:true,
+        desc:'The most powerful object in the home. Never place directly opposite or adjacent to the sink — fire and water in conflict destroys wealth chi. In Australia, north or east placement suits morning cooking light.'},
+      {id:'sink',name:'Sink',emoji:'🚰',el:'water',bg:'#10203d',
+        desc:'Keep well separated from the stove. A window above the sink is ideal — but avoid the hot western wall in the Australian afternoon.'},
+      {id:'fridge',name:'Refrigerator',emoji:'🧊',el:'metal',bg:'#182028',
+        desc:"A large metal appliance — keep it apart from the stove so heating and cooling energies don't compete side by side."},
+      {id:'counter',name:'Prep Counter',emoji:'🔪',el:'wood',bg:'#102010',
+        desc:'Where wood (ingredients) meets fire (stove) — position beside the stove for smooth food-prep flow.'},
+      {id:'herbPlant',name:'Herb Plant',emoji:'🪴',el:'wood',bg:'#102010',
+        desc:"Fresh greenery on the windowsill — living wood chi that softens the kitchen's hard metal appliances."},
+      {id:'pantry',name:'Pantry Cabinet',emoji:'🗄️',el:'earth',bg:'#28200c',
+        desc:"Grounding storage — keep doors closed so chi (and food) doesn't feel exposed or cluttered."},
+      {id:'kettle',name:'Kettle',emoji:'🫖',el:'fire',bg:'#3d1010',
+        desc:"A small echo of the stove's fire chi at the counter — keep it away from the sink to avoid repeating the fire-water clash."}
+    ]},
+  bathroom:{name:'Bathroom',emoji:'🚿',
+    hint:'Keep fixtures out of direct view of the Door 🚪.',
+    items:[
+      {id:'toilet',name:'Toilet',emoji:'🚽',el:'water',bg:'#10203d',anchor:true,
+        desc:'Never visible from the door — chi (and wealth) drains straight out. Tuck it out of the direct sightline and always keep the lid down.'},
+      {id:'shower',name:'Shower / Bath',emoji:'🚿',el:'water',bg:'#10203d',
+        desc:"A strong water feature — balance it with earth tones or plants so the room doesn't drain more chi than it holds."},
+      {id:'vanity',name:'Vanity Sink',emoji:'🚰',el:'wood',bg:'#102010',
+        desc:'The timber cabinetry beneath the basin brings wood energy — a grounding counterbalance to the water chi that dominates this room. Keep the counter clear so clutter doesn\u2019t stagnate it.'},
+      {id:'bmirror',name:'Mirror',emoji:'🪞',el:'metal',bg:'#182028',
+        desc:'Good for expanding a small room, but avoid a mirror directly facing the toilet — it doubles the draining chi.'},
+      {id:'plantBath',name:'Potted Plant',emoji:'🪴',el:'wood',bg:'#102010',
+        desc:'Living wood chi balances the water-heavy fixtures of the bathroom and helps absorb excess moisture energy.'},
+      {id:'candleBath',name:'Scented Candle',emoji:'🕯️',el:'fire',bg:'#3d1010',
+        desc:"The bathroom's only source of fire chi — small and controlled, it warms an otherwise cold, watery room."},
+      {id:'vaseBath',name:'Ceramic Vase',emoji:'🏺',el:'earth',bg:'#28200c',
+        desc:'An earth-toned accent that grounds the water chi — dried flowers or smooth stones work well here.'}
+    ]}
+};
+
+const ELEMENT_TIP={
+  fire:'add water or metal accents to cool the energy',
+  water:'add earth tones or a plant to absorb the excess',
+  wood:'add metal accents to bring structure',
+  metal:'add wood or fire accents to warm the space',
+  earth:'add wood accents to loosen stagnant energy'
+};
+
+const ZONE_EL={north:'fire',south:'water',east:'wood',west:'metal',centre:'earth',
+  northeast:'metal',northwest:'wood',southeast:'earth',southwest:'earth'};
+const CONF={fire:'water',water:'fire',wood:'metal',metal:'wood'};
+
+const CELL_M=0.5; // each grid square = 0.5m x 0.5m
+let GR=6, GC=6; // rows (length, N-S) x columns (width, E-W) — defaults from 3m x 3m
+let state=Array.from({length:GR},()=>Array(GC).fill(null));
+let picked=null,baguaOn=false,roomType='bedroom',CUR={};
+
+// ── ROOM SELECTION ───────────────────────────────────────────────────
+function buildCUR(){
+  CUR={door:STRUCT.door,window:STRUCT.window};
+  ROOMS[roomType].items.forEach(it=>CUR[it.id]=it);
+}
+
+function renderCards(){
+  const wrap=document.getElementById('cards');
+  const list=[STRUCT.door,STRUCT.window,...ROOMS[roomType].items];
+  wrap.innerHTML=list.map(it=>
+    `<div class="pc" id="pc-${it.id}">
+       <div class="pc-em">${it.emoji}</div>
+       <div class="pc-name">${it.name}</div>
+       <div class="pc-chi">${it.el}</div>
+     </div>`).join('');
+  list.forEach(it=>{
+    const el=document.getElementById('pc-'+it.id);
+    attachCardDrag(el,it.id);
+  });
+}
+
+function selectRoom(type){
+  roomType=type;
+  document.querySelectorAll('.room-btn').forEach(el=>el.classList.toggle('on',el.dataset.room===type));
+  document.getElementById('hRoom').textContent='— '+ROOMS[type].name;
+  document.getElementById('hint').textContent=ROOMS[type].hint;
+  buildCUR();
+  renderCards();
+  clearPick();
+  document.getElementById('infoCard').classList.add('hidden');
+  clearGrid();
+}
+
+// ── TABS ──────────────────────────────────────────────────────────
+function toggleHelp(){
+  document.getElementById('helpOverlay').classList.toggle('hidden');
+}
+
+function goTab(n){
+  [0,1,2,3,4].forEach(i=>{
+    document.getElementById('tab'+i).classList.toggle('on',i===n);
+    document.getElementById('v'+i).classList.toggle('on',i===n);
+  });
+  if(n===1) buildGrid();
+  if(n===3) renderBaziTab();
+  if(n===4) renderPuzzleList();
+}
+
+// ── PICK ──────────────────────────────────────────────────────────
+function pick(id){
+  picked=id;
+  const p=CUR[id];
+  document.querySelectorAll('.pc').forEach(el=>el.classList.remove('on'));
+  document.getElementById('pc-'+id).classList.add('on');
+  document.getElementById('icName').textContent=p.emoji+' '+p.name;
+  document.getElementById('icDesc').textContent=p.desc;
+  document.getElementById('infoCard').classList.remove('hidden');
+  document.getElementById('selEm').textContent=p.emoji;
+  document.getElementById('selNm').textContent=p.name;
+  document.getElementById('selBar').classList.remove('hidden');
+}
+
+function clearPick(){
+  picked=null;
+  document.querySelectorAll('.pc').forEach(el=>el.classList.remove('on'));
+  document.getElementById('selBar').classList.add('hidden');
+}
+
+// ── ZONE (AU: row 0=south/top, row G-1=north/bottom) ─────────────
+function zone(r,c){
+  const tr=GR/3,tc=GC/3;
+  const ri=r<tr?0:r<tr*2?1:2, ci=c<tc?0:c<tc*2?1:2;
+  return [['southwest','south','southeast'],['west','centre','east'],
+          ['northwest','north','northeast']][ri][ci];
+}
+function chiQ(r,c,id){
+  const z=zone(r,c),ze=ZONE_EL[z],el=CUR[id].el;
+  if(el===ze)return'good';
+  if(CONF[el]===ze||CONF[ze]===el)return'bad';
+  return'neu';
+}
+
+// ── GRID ──────────────────────────────────────────────────────────
+function cs(){
+  const availW=window.innerWidth-40, availH=window.innerHeight-300;
+  const s=Math.min(availW/GC, availH/GR);
+  return Math.max(18,Math.floor(s));
+}
+
+function buildGrid(){
+  const el=document.getElementById('grid');
+  const s=cs();
+  el.style.gridTemplateColumns=`repeat(${GC},${s}px)`;
+  el.style.gridTemplateRows=`repeat(${GR},${s}px)`;
+  el.innerHTML='';
+  for(let r=0;r<GR;r++) for(let c=0;c<GC;c++){
+    const cell=document.createElement('div');
+    cell.className='cell';
+    cell.style.width=s+'px'; cell.style.height=s+'px';
+    cell.dataset.z=zone(r,c);
+    cell.dataset.r=r; cell.dataset.c=c;
+    if(baguaOn) cell.style.outline='1px dashed rgba(180,140,40,0.35)';
+    const id=state[r][c];
+    if(id){
+      const p=CUR[id],q=chiQ(r,c,id);
+      const tile=document.createElement('div');
+      tile.className='tile';
+      tile.style.cssText=`background:${p.bg};width:${s-2}px;height:${s-2}px;font-size:${Math.max(16,s-6)}px`;
+      tile.innerHTML=`${p.emoji}<div class="chi-dot ${q}"></div>`;
+      attachTileDrag(tile,r,c,id);
+      cell.appendChild(tile);
+    } else {
+      attachEmptyCellTap(cell,r,c);
+    }
+    el.appendChild(cell);
+  }
+}
+
+function clearGrid(){
+  for(let r=0;r<GR;r++) for(let c=0;c<GC;c++) state[r][c]=null;
+  buildGrid();calcScore();
+}
+
+function toggleBagua(){ baguaOn=!baguaOn; buildGrid(); }
+
+// ── PERSISTENCE (per-device room size memory) ──────────────────────
+const SIZE_KEY='fengshui_room_size_v1';
+
+function saveRoomSize(lenM,widM){
+  try{
+    localStorage.setItem(SIZE_KEY, JSON.stringify({length:lenM,width:widM}));
+  }catch(e){ /* localStorage unavailable (privacy mode etc) — fail silently */ }
+}
+
+function loadRoomSize(){
+  try{
+    const raw=localStorage.getItem(SIZE_KEY);
+    if(!raw) return null;
+    const d=JSON.parse(raw);
+    if(typeof d.length==='number'&&typeof d.width==='number') return d;
+  }catch(e){ /* ignore corrupt/unavailable storage */ }
+  return null;
+}
+
+// ── ROOM SIZE ────────────────────────────────────────────────────
+function applyRoomSize(){
+  const lenIn=document.getElementById('inLen');
+  const widIn=document.getElementById('inWid');
+  let lenM=parseFloat(lenIn.value), widM=parseFloat(widIn.value);
+  if(isNaN(lenM)||lenM<=0) lenM=5;
+  if(isNaN(widM)||widM<=0) widM=4;
+  // clamp to a sane playable range
+  lenM=Math.min(12,Math.max(1.5,lenM));
+  widM=Math.min(12,Math.max(1.5,widM));
+  lenIn.value=lenM; widIn.value=widM;
+
+  GR=Math.max(3,Math.round(lenM/CELL_M));
+  GC=Math.max(3,Math.round(widM/CELL_M));
+
+  state=Array.from({length:GR},()=>Array(GC).fill(null));
+  clearPick();
+  document.getElementById('sizeNote').textContent=
+    `${GC}×${GR} grid — 1 square = ${CELL_M}m × ${CELL_M}m (${(GC*CELL_M).toFixed(1)}m × ${(GR*CELL_M).toFixed(1)}m room)`;
+  saveRoomSize(lenM,widM);
+  buildGrid();
+  calcScore();
+
+  const note=document.getElementById('sizeNote');
+  const base=note.textContent;
+  note.textContent=base+' — saved ✓';
+  setTimeout(()=>{ note.textContent=base; },1400);
+}
+
+// ── GEOMETRY HELPERS ─────────────────────────────────────────────
+function edge(p){return p&&(p[0]===0||p[0]===GR-1||p[1]===0||p[1]===GC-1);}
+function sameLine(a,b){return a&&b&&(a[0]===b[0]||a[1]===b[1]);}
+function cheb(a,b){return (a&&b)?Math.max(Math.abs(a[0]-b[0]),Math.abs(a[1]-b[1])):null;}
+function sameWall(a,b){
+  if(!a||!b)return false;
+  if(a[0]===0&&b[0]===0)return true;
+  if(a[0]===GR-1&&b[0]===GR-1)return true;
+  if(a[1]===0&&b[1]===0)return true;
+  if(a[1]===GC-1&&b[1]===GC-1)return true;
+  return false;
+}
+function adjacent(a,b){return a&&b&&Math.abs(a[0]-b[0])<=1&&Math.abs(a[1]-b[1])<=1&&!(a[0]===b[0]&&a[1]===b[1]);}
+
+// ── DRAG-AND-DROP ENGINE (Pointer Events — works for touch and mouse) ──
+// Generic so it can drive both the fine furniture grid and the coarse
+// 3x3 Between-Rooms puzzle grid. A plain tap (no movement past the
+// threshold) falls back to onTap(); a real drag calls onDrop(cellEl).
+const DRAG_THRESHOLD=10;
+
+function createGhost(emoji,x,y){
+  const g=document.createElement('div');
+  g.className='drag-ghost';
+  g.textContent=emoji;
+  g.style.left=x+'px'; g.style.top=y+'px';
+  document.body.appendChild(g);
+  return g;
+}
+function updateGhost(g,x,y){ if(g){ g.style.left=x+'px'; g.style.top=y+'px'; } }
+function cellAtSel(x,y,selector){
+  const el=document.elementFromPoint(x,y);
+  return el&&el.closest?el.closest(selector):null;
+}
+function highlightCellAt(x,y,selector){
+  clearHighlight(selector);
+  const cellEl=cellAtSel(x,y,selector);
+  if(cellEl) cellEl.classList.add('drag-over');
+}
+function clearHighlight(selector){
+  document.querySelectorAll(selector+'.drag-over').forEach(c=>c.classList.remove('drag-over'));
+}
+
+function makeDraggable(el,emoji,targetSelector,onTap,onDrop){
+  el.addEventListener('pointerdown',e=>{
+    if(e.button!==undefined&&e.button!==0) return;
+    e.preventDefault();
+    const pid=e.pointerId;
+    try{ el.setPointerCapture(pid); }catch(err){ /* not all browsers support this */ }
+    const startX=e.clientX,startY=e.clientY;
+    let moved=false,ghost=null,done=false;
+    function onMove(ev){
+      if(ev.pointerId!==pid) return;
+      const dx=ev.clientX-startX,dy=ev.clientY-startY;
+      if(!moved&&Math.hypot(dx,dy)>DRAG_THRESHOLD){
+        moved=true;
+        ghost=createGhost(emoji,ev.clientX,ev.clientY);
+        el.classList.add('dragging-source');
+      }
+      if(moved){
+        updateGhost(ghost,ev.clientX,ev.clientY);
+        highlightCellAt(ev.clientX,ev.clientY,targetSelector);
+      }
+    }
+    function cleanup(){
+      document.removeEventListener('pointermove',onMove);
+      document.removeEventListener('pointerup',onUp);
+      document.removeEventListener('pointercancel',onCancel);
+      try{ el.releasePointerCapture(pid); }catch(err){ /* ignore */ }
+      clearHighlight(targetSelector);
+      el.classList.remove('dragging-source');
+    }
+    function onUp(ev){
+      if(ev.pointerId!==pid||done) return;
+      done=true;
+      cleanup();
+      if(moved){
+        if(ghost) ghost.remove();
+        const cellEl=cellAtSel(ev.clientX,ev.clientY,targetSelector);
+        onDrop(cellEl);
+      } else {
+        onTap();
+      }
+    }
+    function onCancel(ev){
+      if(ev.pointerId!==pid||done) return;
+      done=true;
+      cleanup();
+      if(ghost) ghost.remove();
+      // A pointercancel means the browser aborted the gesture (e.g. it decided
+      // this was a scroll instead). Treat it like a tap so a quick press that
+      // gets cancelled before any real movement still removes/selects the tile,
+      // instead of silently doing nothing.
+      if(!moved) onTap();
+    }
+    document.addEventListener('pointermove',onMove);
+    document.addEventListener('pointerup',onUp);
+    document.addEventListener('pointercancel',onCancel);
+  });
+}
+
+// Empty-cell placement uses the SAME pointer-event model as the drag engine
+// (pointerdown/pointerup + a movement threshold to distinguish a tap from a
+// scroll), rather than a native 'click' listener. Mixing click-based and
+// pointer-based handling on the same grid was a likely source of tiles that
+// stop responding after being placed on real touch devices.
+function attachEmptyCellTap(cellEl,r,c){
+  cellEl.addEventListener('pointerdown',e=>{
+    if(e.button!==undefined&&e.button!==0) return;
+    const pid=e.pointerId,startX=e.clientX,startY=e.clientY;
+    let done=false;
+    function finish(ev,isTap){
+      if(ev.pointerId!==pid||done) return;
+      done=true;
+      cellEl.removeEventListener('pointerup',onUp);
+      cellEl.removeEventListener('pointercancel',onCancel);
+      if(isTap&&picked){
+        state[r][c]=picked;
+        buildGrid();
+        calcScore();
+      }
+    }
+    function onUp(ev){
+      const dx=ev.clientX-startX,dy=ev.clientY-startY;
+      finish(ev,Math.hypot(dx,dy)<DRAG_THRESHOLD);
+    }
+    function onCancel(ev){ finish(ev,false); }
+    cellEl.addEventListener('pointerup',onUp);
+    cellEl.addEventListener('pointercancel',onCancel);
+  });
+}
+
+// ── ON-SCREEN DEBUG LOG (temporary diagnostic aid) ──────────────────
+// Toggle with the 🐞 button on the Layout tab. Logs raw pointer/click
+// events as they land, so touch issues on real devices can be seen
+// directly instead of guessed at.
+const DBG_MAX=25;
+function dbgLog(msg){
+  const el=document.getElementById('dbgLog');
+  if(!el||el.classList.contains('hidden')) return;
+  const line=document.createElement('div');
+  const t=new Date().toISOString().substr(11,12);
+  line.textContent=`${t} ${msg}`;
+  el.appendChild(line);
+  while(el.children.length>DBG_MAX) el.removeChild(el.firstChild);
+  el.scrollTop=el.scrollHeight;
+}
+function dbgDescribe(e){
+  const t=e.target;
+  const cls=(t&&t.className)?String(t.className).trim().split(/\s+/).join('.'):'';
+  const tag=t?t.tagName:'?';
+  const x=Math.round(e.clientX||0),y=Math.round(e.clientY||0);
+  return `${e.type} → ${tag}.${cls} @${x},${y}`;
+}
+['pointerdown','pointerup','pointercancel','click'].forEach(evt=>{
+  document.addEventListener(evt,e=>dbgLog(dbgDescribe(e)),true);
+});
+function toggleDbg(){
+  document.getElementById('dbgLog').classList.toggle('hidden');
+}
+
+function attachCardDrag(cardEl,id){
+  makeDraggable(cardEl,CUR[id].emoji,'.cell',
+    ()=>pick(id),
+    (cellEl)=>{
+      if(cellEl){ const r=+cellEl.dataset.r,c=+cellEl.dataset.c; state[r][c]=id; }
+      buildGrid(); calcScore();
+    }
+  );
+}
+function attachTileDrag(tileEl,r,c,id){
+  makeDraggable(tileEl,CUR[id].emoji,'.cell',
+    ()=>{ state[r][c]=null; buildGrid(); calcScore(); },
+    (cellEl)=>{
+      if(cellEl){
+        const nr=+cellEl.dataset.r,nc=+cellEl.dataset.c;
+        if(nr!==r||nc!==c){ state[r][c]=null; state[nr][nc]=id; }
+      }
+      buildGrid(); calcScore();
+    }
+  );
+}
+
+// ── SCORE ─────────────────────────────────────────────────────────
+function calcScore(){
+  let placed=0;
+  const ec={fire:0,water:0,wood:0,metal:0,earth:0};
+  const pos={};
+  for(let r=0;r<GR;r++) for(let c=0;c<GC;c++){
+    const id=state[r][c]; if(!id)continue;
+    placed++; ec[CUR[id].el]++; pos[id]=[r,c];
+  }
+  ['fire','water','wood','metal','earth'].forEach(e=>
+    document.getElementById('ec-'+e).textContent=ec[e]);
+  if(placed===0){resetUI();return;}
+
+  let flow=50,cmd=50,bal=100,con=100;
+  const fb=[];
+  const door=pos.door, win=pos.window;
+
+  // Door / window — common to every room
+  if(door){
+    flow+=15; fb.push({t:'good',m:'✓ Door placed — the chi entry point of the room is defined.'});
+    if(door[0]>=GR-2){flow+=10;fb.push({t:'good',m:'✓ North-facing door — most auspicious in Australia, welcoming sunlight and yang energy.'});}
+    else if(door[0]<=1){flow-=6;fb.push({t:'tip',m:'☯ South-facing door gets little sun in Australia — a warmer palette can compensate.'});}
+  } else {
+    flow-=10; fb.push({t:'tip',m:'☯ Place the Door 🚪 first to map how chi enters this room.'});
+  }
+  if(win){
+    flow+=8;
+    if(win[0]>=GR-2){flow+=6;fb.push({t:'good',m:'✓ North-facing window — floods the room with warm Australian sun.'});}
+  }
+
+  // Room-type specific rules
+  switch(roomType){
+    case 'bedroom':{
+      const bed=pos.bed;
+      if(bed){
+        if(edge(bed)){cmd+=15;fb.push({t:'good',m:'✓ Bed headboard against a solid wall — strong support for restful sleep.'});}
+        else{cmd-=15;fb.push({t:'bad',m:'✗ Bed floating away from any wall — move it back for a solid headboard.'});}
+        if(door&&sameLine(bed,door)){con-=20;fb.push({t:'bad',m:'✗ Bed directly in line with the door — the "coffin position" drains sleep chi. Offset it.'});}
+        else if(door){cmd+=10;fb.push({t:'good',m:'✓ Bed out of direct line with the door — a calmer command position.'});}
+        if(door&&cheb(bed,door)>=3){cmd+=8;fb.push({t:'good',m:'✓ Bed positioned to see the door from a safe distance — classic command position.'});}
+        if(win&&sameWall(bed,win)){con-=10;fb.push({t:'bad',m:'✗ Bed backed against the same wall as the window — lacks solid support behind the headboard.'});}
+      }
+      if(pos.mirror&&bed&&sameLine(pos.mirror,bed)){con-=15;fb.push({t:'bad',m:'✗ Mirror directly faces the bed — reposition or cover it at night to protect sleep chi.'});}
+      if(pos.wardrobe&&bed&&adjacent(pos.wardrobe,bed)){flow-=5;fb.push({t:'tip',m:'☯ Wardrobe crowding the bed — leave breathing room at the foot of the bed.'});}
+      if(pos.nightstand&&bed&&adjacent(pos.nightstand,bed)){flow+=8;fb.push({t:'good',m:'✓ Nightstand anchoring the bed — steady, supported sleep chi.'});}
+      break;
+    }
+    case 'living':{
+      const sofa=pos.sofa;
+      if(sofa){
+        if(edge(sofa)){cmd+=15;fb.push({t:'good',m:'✓ Sofa backed by a solid wall — a secure gathering point.'});}
+        else{cmd-=12;fb.push({t:'tip',m:'☯ Move the sofa against a wall for stronger back support.'});}
+        if(door&&sameLine(sofa,door)){con-=12;fb.push({t:'bad',m:'✗ Sofa directly in line with the door — guests feel exposed. Angle it off-axis.'});}
+        else if(door){flow+=8;fb.push({t:'good',m:'✓ Sofa can see the door without sitting in its direct path — good command position.'});}
+      }
+      if(pos.tv&&win&&sameLine(pos.tv,win)){flow-=6;fb.push({t:'tip',m:'☯ TV directly opposite the window — glare competes with the screen and chi flows straight out.'});}
+      if(pos.coffee&&sofa&&adjacent(pos.coffee,sofa)){flow+=8;fb.push({t:'good',m:'✓ Coffee table close to the sofa — chi circulates smoothly between seating.'});}
+      break;
+    }
+    case 'office':{
+      const desk=pos.desk;
+      if(desk){
+        if(edge(desk)){cmd+=15;fb.push({t:'good',m:'✓ Desk backed by a solid wall — strong support for focus and authority.'});}
+        else{cmd-=15;fb.push({t:'bad',m:'✗ Desk with no wall behind it — back support is essential in the command position.'});}
+        if(door&&sameLine(desk,door)){con-=15;fb.push({t:'bad',m:'✗ Desk directly in line with the door — distracting and undermines authority. Offset it.'});}
+        else if(door){cmd+=10;fb.push({t:'good',m:'✓ Desk positioned to see the door without sitting in its direct path — the command position.'});}
+      }
+      if(pos.filing&&desk&&adjacent(pos.filing,desk)){bal+=5;fb.push({t:'good',m:'✓ Filing cabinet within reach keeps clutter — and stagnant chi — under control.'});}
+      break;
+    }
+    case 'dining':{
+      const table=pos.table;
+      if(table){
+        if(door&&sameLine(table,door)){con-=15;fb.push({t:'bad',m:'✗ Dining table directly in line with the door — food visible from the entrance disperses wealth chi.'});}
+        else if(door){flow+=10;fb.push({t:'good',m:"✓ Dining table out of the door's direct line — wealth chi stays contained at the table."});}
+      }
+      if(pos.chairs&&table&&adjacent(pos.chairs,table)){flow+=8;fb.push({t:'good',m:'✓ Chairs drawn close to the table — every seat feels included in the chi.'});}
+      if(pos.light&&table&&sameLine(pos.light,table)){flow+=6;fb.push({t:'good',m:'✓ Pendant light aligned above the table — activates and energises shared meals.'});}
+      break;
+    }
+    case 'kitchen':{
+      const stove=pos.stove, sink=pos.sink, fridge=pos.fridge;
+      if(stove&&sink){
+        if(adjacent(stove,sink)){con-=25;fb.push({t:'bad',m:'✗ Stove and sink adjacent — fire and water in direct conflict, destroying wealth chi.'});}
+        else{con+=10;fb.push({t:'good',m:'✓ Stove and sink well separated — fire and water not in conflict.'});}
+      }
+      if(stove&&fridge&&adjacent(stove,fridge)){con-=12;fb.push({t:'bad',m:'✗ Stove next to the fridge — heating and cooling appliances competing side by side.'});}
+      if(stove){
+        if(stove[0]>=GR-2){flow+=10;fb.push({t:'good',m:'✓ Stove on the north side — fire thrives with Australian morning sun.'});}
+        if((stove[1]===0||stove[1]===GC-1)&&stove[0]<=1){con-=8;fb.push({t:'bad',m:'✗ Stove on the hot western wall — afternoon Australian sun overheats the kitchen.'});}
+      }
+      if(pos.counter&&stove&&adjacent(pos.counter,stove)){flow+=8;fb.push({t:'good',m:'✓ Prep counter beside the stove — smooth flow from ingredients to cooking.'});}
+      break;
+    }
+    case 'bathroom':{
+      const toilet=pos.toilet;
+      if(toilet&&door){
+        if(sameLine(toilet,door)){con-=20;fb.push({t:'bad',m:'✗ Toilet directly visible from the door — chi and wealth drain straight out. Screen it or move it out of the sightline.'});}
+        else{con+=10;fb.push({t:'good',m:"✓ Toilet out of the door's direct line — chi stays contained."});}
+      }
+      if(toilet&&pos.bmirror&&sameLine(toilet,pos.bmirror)){con-=12;fb.push({t:'bad',m:'✗ Mirror directly faces the toilet — it doubles the draining chi. Reposition it.'});}
+      break;
+    }
+  }
+
+  // Five-element balance
+  const vals=Object.values(ec),mx=Math.max(...vals),np=vals.filter(v=>v>0).length;
+  if(mx>=3){
+    bal-=(mx-2)*15;
+    const dm=Object.keys(ec).find(k=>ec[k]===mx);
+    fb.push({t:'bad',m:`✗ Too much ${dm} element — ${ELEMENT_TIP[dm]}.`});
+  }
+  if(np>=4){bal+=15;fb.push({t:'good',m:'✓ Good element variety — this room carries balanced, diverse chi.'});}
+  if(np===5){bal+=15;fb.push({t:'good',m:'✓ All Five Elements present — rare and excellent harmony for a single room.'});}
+
+  // Bagua zone alignment bonus
+  let zb=0;
+  for(let r=0;r<GR;r++) for(let c=0;c<GC;c++){
+    if(!state[r][c])continue;
+    const q=chiQ(r,c,state[r][c]);
+    if(q==='good')zb+=5; if(q==='bad')zb-=8;
+  }
+  flow+=zb;
+
+  const cl=v=>Math.min(100,Math.max(0,Math.round(v)));
+  flow=cl(flow);cmd=cl(cmd);bal=cl(bal);con=cl(con);
+  const ov=Math.round((flow+cmd+bal+con)/4);
+
+  let grade,gc;
+  if(ov>=88){grade='☀ Excellent Harmony';gc='#8aaa5a';}
+  else if(ov>=72){grade='✦ Good Chi Flow';gc='#c8912a';}
+  else if(ov>=52){grade='△ Needs Adjustment';gc='#c8912a';}
+  else{grade='⚠ Chi in Conflict';gc='#c43030';}
+
+  document.getElementById('scoreNum').textContent=ov;
+  document.getElementById('scoreGrade').textContent=grade;
+  document.getElementById('scoreGrade').style.color=gc;
+  document.getElementById('hChi').textContent=ov;
+
+  [{k:'flow',v:flow},{k:'cmd',v:cmd},{k:'bal',v:bal},{k:'con',v:con}].forEach(({k,v})=>{
+    document.getElementById('bv-'+k).textContent=v+'%';
+    document.getElementById('bf-'+k).style.width=v+'%';
+  });
+  document.getElementById('fbList').innerHTML=
+    fb.length?fb.slice(0,7).map(f=>`<div class="fb ${f.t}">${f.m}</div>`).join('')
+    :'<div class="fb tip">☯ Keep placing furniture to reveal Australian feng shui analysis.</div>';
+}
+
+function resetUI(){
+  document.getElementById('scoreNum').textContent='0';
+  document.getElementById('scoreGrade').textContent='Place furniture to begin';
+  document.getElementById('scoreGrade').style.color='#2a4a2a';
+  document.getElementById('hChi').textContent='—';
+  ['flow','cmd','bal','con'].forEach(k=>{
+    document.getElementById('bv-'+k).textContent='—';
+    document.getElementById('bf-'+k).style.width='0%';
+  });
+  document.getElementById('fbList').innerHTML=
+    `<div class="fb tip">${ROOMS[roomType].hint}</div>`;
+}
+
+window.addEventListener('resize',()=>{ if(document.getElementById('v1').classList.contains('on')) buildGrid(); });
+
+// ── INIT ─────────────────────────────────────────────────────────
+selectRoom('bedroom');
+
+const savedSize=loadRoomSize();
+if(savedSize){
+  document.getElementById('inLen').value=savedSize.length;
+  document.getElementById('inWid').value=savedSize.width;
+  GR=Math.max(3,Math.round(savedSize.length/CELL_M));
+  GC=Math.max(3,Math.round(savedSize.width/CELL_M));
+  state=Array.from({length:GR},()=>Array(GC).fill(null));
+}
+document.getElementById('sizeNote').textContent=
+  `${GC}×${GR} grid — 1 square = ${CELL_M}m × ${CELL_M}m (${(GC*CELL_M).toFixed(1)}m × ${(GR*CELL_M).toFixed(1)}m room)`;
+
+['inLen','inWid'].forEach(id=>{
+  document.getElementById(id).addEventListener('keydown',e=>{
+    if(e.key==='Enter'){e.preventDefault();applyRoomSize();}
+  });
+});
+buildGrid(); calcScore();
+
+// ═════════════════════════════════════════════════════════════════
+// ── BAZI (八字) BIRTH CHART MODULE — v1, date-only ─────────────────
+// Tested & calibrated separately (bazi_calc.py / bazi_test_tool.html)
+// before wiring in here. See those files for solar-term astronomy,
+// hidden-stem table sourcing, and calibration notes.
+// ═════════════════════════════════════════════════════════════════
+
+const BAZI_UNLOCK_KEY='fengshui_bazi_unlocked_v1';
+const BAZI_DOB_KEY='fengshui_bazi_dob_v1';
+
+const B_STEMS=["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"];
+const B_STEMS_PY=["Jia","Yi","Bing","Ding","Wu","Ji","Geng","Xin","Ren","Gui"];
+const B_STEM_EL=["Wood","Wood","Fire","Fire","Earth","Earth","Metal","Metal","Water","Water"];
+const B_BRANCHES=["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+const B_BRANCHES_PY=["Zi","Chou","Yin","Mao","Chen","Si","Wu","Wei","Shen","You","Xu","Hai"];
+
+function bSbName(si,bi){return `${B_STEMS[si]}${B_BRANCHES[bi]} (${B_STEMS_PY[si]} ${B_BRANCHES_PY[bi]})`;}
+
+function bToJD(y,m,d,h=0,mi=0,s=0){
+  let dd=d+(h+mi/60+s/3600)/24;
+  if(m<=2){y-=1;m+=12;}
+  const A=Math.floor(y/100), B=2-A+Math.floor(A/4);
+  return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+dd+B-1524.5;
+}
+function bJdToDate(jd){
+  jd=jd+0.5;
+  const Z=Math.floor(jd), F=jd-Z;
+  let A;
+  if(Z<2299161){A=Z;} else{const alpha=Math.floor((Z-1867216.25)/36524.25); A=Z+1+alpha-Math.floor(alpha/4);}
+  const B=A+1524, C=Math.floor((B-122.1)/365.25), D=Math.floor(365.25*C), E=Math.floor((B-D)/30.6001);
+  const day=B-D-Math.floor(30.6001*E)+F;
+  const month=E<14?E-1:E-13;
+  const year=month>2?C-4716:C-4715;
+  const dayInt=Math.floor(day), frac=day-dayInt;
+  const totalMin=Math.round(frac*24*60);
+  return new Date(Date.UTC(year,month-1,dayInt,Math.floor(totalMin/60),totalMin%60));
+}
+function bSolarLon(jd){
+  const T=(jd-2451545.0)/36525.0;
+  const L0=280.46646+36000.76983*T+0.0003032*T*T;
+  const M=357.52911+35999.05029*T-0.0001537*T*T;
+  const Mr=M*Math.PI/180;
+  const C=(1.914602-0.004817*T-0.000014*T*T)*Math.sin(Mr)+(0.019993-0.000101*T)*Math.sin(2*Mr)+0.000289*Math.sin(3*Mr);
+  const trueLong=L0+C;
+  const omega=125.04-1934.136*T;
+  const appLong=trueLong-0.00569-0.00478*Math.sin(omega*Math.PI/180);
+  return ((appLong%360)+360)%360;
+}
+function bFindSolarTermJD(targetLon,approxJD){
+  let lo=approxJD-10, hi=approxJD+10;
+  function diff(jd){const lon=bSolarLon(jd); let d=(lon-targetLon+180)%360-180; if(d<-180)d+=360; return d;}
+  let flo=diff(lo), fhi=diff(hi), tries=0;
+  while(flo*fhi>0 && tries<5){lo-=5;hi+=5;flo=diff(lo);fhi=diff(hi);tries++;}
+  for(let i=0;i<60;i++){
+    const mid=(lo+hi)/2, fmid=diff(mid);
+    if(Math.abs(fmid)<1e-6) return mid;
+    if(flo*fmid<=0){hi=mid;fhi=fmid;} else {lo=mid;flo=fmid;}
+  }
+  return (lo+hi)/2;
+}
+const B_TERM_NAMES=["立春","雨水","惊蛰","春分","清明","谷雨","立夏","小满","芒种","夏至",
+  "小暑","大暑","立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至","小寒","大寒"];
+const B_JIE_IDX=[0,2,4,6,8,10,12,14,16,18,20,22];
+const B_APPROX_MD={0:[2,4],2:[3,6],4:[4,5],6:[5,6],8:[6,6],10:[7,7],
+  12:[8,8],14:[9,8],16:[10,8],18:[11,7],20:[12,7],22:[1,6]};
+
+function bJieTermsForWindow(year){
+  const terms=[];
+  for(const y of [year,year+1]){
+    for(const idx of B_JIE_IDX){
+      const [mo,dy]=B_APPROX_MD[idx];
+      const approxJD=bToJD(y,mo,dy);
+      const targetLon=(idx*15.0+315.0)%360.0;
+      const jd=bFindSolarTermJD(targetLon,approxJD);
+      terms.push([jd,targetLon,B_TERM_NAMES[idx]]);
+    }
+  }
+  terms.sort((a,b)=>a[0]-b[0]);
+  const dedup=[];
+  for(const t of terms){ if(!dedup.length || Math.abs(t[0]-dedup[dedup.length-1][0])>5) dedup.push(t); }
+  return dedup;
+}
+function bYearPillar(y,m,d){
+  const approx=bToJD(y,2,4);
+  const lichunJD=bFindSolarTermJD(315.0,approx);
+  const dateJD=bToJD(y,m,d);
+  const baziYear = dateJD>=lichunJD ? y : y-1;
+  const si=((baziYear-4)%10+10)%10, bi=((baziYear-4)%12+12)%12;
+  return {si,bi,baziYear};
+}
+const B_MONTH_BRANCH_SEQ=["寅","卯","辰","巳","午","未","申","酉","戌","亥","子","丑"];
+const B_WU_HU_DUN={0:2,5:2,1:4,6:4,2:6,7:6,3:8,8:8,4:0,9:0};
+function bMonthPillar(y,m,d,yearStemI){
+  let jieTerms=bJieTermsForWindow(y-1).concat(bJieTermsForWindow(y));
+  jieTerms.sort((a,b)=>a[0]-b[0]);
+  const dedup=[];
+  for(const t of jieTerms){ if(!dedup.length || Math.abs(t[0]-dedup[dedup.length-1][0])>5) dedup.push(t); }
+  jieTerms=dedup;
+  const dateJD=bToJD(y,m,d);
+  let idxInWindow=-1;
+  for(let i=0;i<jieTerms.length-1;i++){
+    if(jieTerms[i][0]<=dateJD && dateJD<jieTerms[i+1][0]){ idxInWindow=i; break; }
+  }
+  if(idxInWindow===-1) throw new Error("Could not bracket date within Jie-term window.");
+  const jieName=jieTerms[idxInWindow][2];
+  const termIdx=B_TERM_NAMES.indexOf(jieName);
+  const monthBranchI=B_JIE_IDX.indexOf(termIdx)%12;
+  const bi=B_BRANCHES.indexOf(B_MONTH_BRANCH_SEQ[monthBranchI]);
+  const startStem=B_WU_HU_DUN[yearStemI];
+  const si=(startStem+monthBranchI)%10;
+  return {si,bi};
+}
+// ⚠ CALIBRATION ANCHOR — verified against trusted 万年历 (see conversation history)
+const B_ANCHOR_Y=1900, B_ANCHOR_M=1, B_ANCHOR_D=31;
+const B_ANCHOR_STEM=0, B_ANCHOR_BRANCH=4;
+const B_ANCHOR_OFFSET=0;
+function bDayPillar(y,m,d){
+  const anchorJD=Math.floor(bToJD(B_ANCHOR_Y,B_ANCHOR_M,B_ANCHOR_D));
+  const thisJD=Math.floor(bToJD(y,m,d));
+  const delta=(thisJD-anchorJD)+B_ANCHOR_OFFSET;
+  const si=((B_ANCHOR_STEM+delta)%10+10)%10;
+  const bi=((B_ANCHOR_BRANCH+delta)%12+12)%12;
+  return {si,bi};
+}
+
+// Hidden stems (地支藏干) + month-branch seasonal emphasis — see bazi_calc.py
+// for full sourcing/calibration notes on this weighting convention.
+const B_HIDDEN_STEMS=[
+  [[9,1.0]],[[5,0.6],[9,0.3],[7,0.1]],[[0,0.6],[2,0.3],[4,0.1]],[[1,1.0]],
+  [[4,0.6],[1,0.3],[9,0.1]],[[2,0.6],[6,0.3],[4,0.1]],[[3,0.7],[5,0.3]],
+  [[5,0.6],[3,0.3],[1,0.1]],[[6,0.6],[8,0.3],[4,0.1]],[[7,1.0]],
+  [[4,0.6],[7,0.3],[3,0.1]],[[8,0.7],[0,0.3]]
+];
+const B_SEASON_MULTIPLIER=1.5;
+
+function bWeightedElementAnalysis(yStem,yBranch,mStem,mBranch,dStem,dBranch){
+  const scores={Wood:0,Fire:0,Earth:0,Metal:0,Water:0};
+  for(const s of [yStem,mStem,dStem]) scores[B_STEM_EL[s]]+=1.0;
+  const branches=[[yBranch,false],[mBranch,true],[dBranch,false]];
+  for(const [branch,isMonth] of branches){
+    const mult=isMonth?B_SEASON_MULTIPLIER:1.0;
+    for(const [stemI,frac] of B_HIDDEN_STEMS[branch]){
+      scores[B_STEM_EL[stemI]]+=frac*mult;
+    }
+  }
+  const total=Object.values(scores).reduce((a,b)=>a+b,0);
+  const pct={};
+  for(const k in scores) pct[k]=total?Math.round(scores[k]/total*1000)/10:0;
+  const maxV=Math.max(...Object.values(scores));
+  const minV=Math.min(...Object.values(scores));
+  const strongest=Object.keys(scores).filter(k=>scores[k]===maxV).sort();
+  const weakest=Object.keys(scores).filter(k=>scores[k]===minV).sort();
+  return {scores,pct,strongest,weakest};
+}
+
+function calcBaziChart(y,m,d){
+  const yp=bYearPillar(y,m,d);
+  const mp=bMonthPillar(y,m,d,yp.si);
+  const dp=bDayPillar(y,m,d);
+  const weighted=bWeightedElementAnalysis(yp.si,yp.bi,mp.si,mp.bi,dp.si,dp.bi);
+  return {
+    inputDate:`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`,
+    baziYear:yp.baziYear,
+    yearPillar:bSbName(yp.si,yp.bi),
+    monthPillar:bSbName(mp.si,mp.bi),
+    dayPillar:bSbName(dp.si,dp.bi),
+    dayMasterElement:B_STEM_EL[dp.si],
+    dayMasterStem:`${B_STEMS[dp.si]} (${B_STEMS_PY[dp.si]})`,
+    weightedPct:weighted.pct,
+    strongest:weighted.strongest,
+    weakest:weighted.weakest
+  };
+}
+
+// ── PAYWALL (demo — swap for real IAP on mobile) ─────────────────
+function isBaziUnlocked(){
+  try{ return localStorage.getItem(BAZI_UNLOCK_KEY)==='1'; }catch(e){ return false; }
+}
+function unlockBazi(){
+  try{ localStorage.setItem(BAZI_UNLOCK_KEY,'1'); }catch(e){ /* ignore */ }
+  renderBaziTab();
+}
+
+// ── FURNITURE CROSS-REFERENCE ──────────────────────────────────────
+// Finds items of a given element in the CURRENT room, split into
+// already-placed (on the grid right now) vs not-yet-placed.
+function furnitureForElementInCurrentRoom(elementCapitalized){
+  const elLower=elementCapitalized.toLowerCase();
+  const pool=[STRUCT.door,STRUCT.window,...ROOMS[roomType].items].filter(it=>it.el===elLower);
+  const placedIds=new Set();
+  for(let r=0;r<GR;r++) for(let c=0;c<GC;c++){ if(state[r][c]) placedIds.add(state[r][c]); }
+  return pool.map(it=>({...it, placed:placedIds.has(it.id)}));
+}
+
+// ── RENDER ────────────────────────────────────────────────────────
+function renderBaziTab(){
+  const unlocked=isBaziUnlocked();
+  document.getElementById('paywall').classList.toggle('hidden',unlocked);
+  document.getElementById('baziInputPanel').classList.toggle('hidden',!unlocked);
+  if(!unlocked){ document.getElementById('baziOutput').innerHTML=''; return; }
+
+  // restore saved DOB if present
+  try{
+    const raw=localStorage.getItem(BAZI_DOB_KEY);
+    if(raw){
+      const dob=JSON.parse(raw);
+      document.getElementById('baziY').value=dob.y;
+      document.getElementById('baziM').value=dob.m;
+      document.getElementById('baziD').value=dob.d;
+    }
+  }catch(e){ /* ignore */ }
+}
+
+function runBaziCalc(){
+  const y=parseInt(document.getElementById('baziY').value);
+  const m=parseInt(document.getElementById('baziM').value);
+  const d=parseInt(document.getElementById('baziD').value);
+  const out=document.getElementById('baziOutput');
+
+  if(isNaN(y)||isNaN(m)||isNaN(d)){
+    out.innerHTML='<div class="chart-advice weak">Enter a valid date of birth.</div>';
+    return;
+  }
+
+  try{
+    const r=calcBaziChart(y,m,d);
+    try{ localStorage.setItem(BAZI_DOB_KEY, JSON.stringify({y,m,d})); }catch(e){ /* ignore */ }
+
+    const weakItems=r.weakest.flatMap(el=>furnitureForElementInCurrentRoom(el));
+    const strongItems=r.strongest.flatMap(el=>furnitureForElementInCurrentRoom(el));
+    const unplacedWeak=weakItems.filter(it=>!it.placed);
+
+    out.innerHTML=`
+      <div class="chart-out">
+        <div class="cline"><span class="ck">Year pillar 年柱</span><span class="cv">${r.yearPillar}</span></div>
+        <div class="cline"><span class="ck">Month pillar 月柱</span><span class="cv">${r.monthPillar}</span></div>
+        <div class="cline"><span class="ck">Day pillar 日柱</span><span class="cv">${r.dayPillar}</span></div>
+        <div class="cline"><span class="ck">Day Master</span><span class="cv">${r.dayMasterStem} · ${r.dayMasterElement}</span></div>
+        <div class="chart-elgrid">
+          ${Object.entries(r.weightedPct).map(([k,v])=>`<div class="chart-elbox"><div class="n">${k}</div><div class="v">${v}%</div></div>`).join('')}
+        </div>
+      </div>
+
+      <div class="chart-advice weak">
+        <b>Weakest: ${r.weakest.join('/')}</b> — for your <b>${ROOMS[roomType].name}</b>, try adding:
+        <div>
+          ${weakItems.length ? weakItems.map(it=>`<span class="pill ${it.placed?'placed':''}">${it.emoji} ${it.name}${it.placed?' ✓ placed':''}</span>`).join('')
+            : `<span class="pill">No ${r.weakest.join('/')} pieces in this room's set yet</span>`}
+        </div>
+        ${weakItems.length && unplacedWeak.length===0 ? '<div style="margin-top:6px;font-size:0.62rem">✓ Already covered — every matching piece is placed on your grid.</div>' : ''}
+      </div>
+
+      <div class="chart-advice strong">
+        <b>Strongest: ${r.strongest.join('/')}</b> — no need to add more of this. ${strongItems.length ? `Already in this room's set: ${strongItems.map(it=>it.emoji+' '+it.name).join(', ')}.` : ''}
+      </div>
+
+      <div style="font-size:0.55rem;color:var(--txt-d);margin-top:4px;line-height:1.5">
+        Switch rooms in the Furniture tab, then revisit this tab and recalculate to see suggestions for a different room.
+      </div>
+    `;
+  }catch(e){
+    out.innerHTML=`<div class="chart-advice weak">Could not calculate chart: ${e.message}</div>`;
+  }
+}
+
+// Reused for the "Between Rooms" puzzle grid below — same 3x3 bagua
+// layout (AU orientation) already used elsewhere in the app.
+const ZONE_GRID=[
+  ['southeast','south','southwest'],
+  ['east','centre','west'],
+  ['northeast','north','northwest']
+];
+const ZONE_LABEL={southeast:'SE',south:'S',southwest:'SW',east:'E',centre:'中',
+  west:'W',northeast:'NE',north:'N ☀',northwest:'NW'};
+
+
+// ═════════════════════════════════════════════════════════════════
+// ── ROOM PUZZLES MODULE — v1 ────────────────────────────────────────
+// Reuses the existing Furniture/Layout/Analysis engine entirely: a
+// puzzle is just a preset flawed starting layout for a given room
+// type. The player fixes it using the normal drag-to-place mechanic,
+// then "Check Solution" re-scores it with the existing calcScore()
+// AND runs an exact rule check (via the existing geometry helpers —
+// edge/sameLine/cheb/sameWall/adjacent) so pass/fail isn't a fuzzy
+// score threshold. Free, not gated — puzzles are core room-level
+// content, same as Furniture/Layout/Analysis.
+// ═════════════════════════════════════════════════════════════════
+
+const PUZZLES_KEY='fengshui_puzzles_solved_v1';
+let PUZZLES_SOLVED=new Set();
+let ACTIVE_PUZZLE=null;
+
+function savePuzzlesSolved(){
+  try{ localStorage.setItem(PUZZLES_KEY, JSON.stringify(Array.from(PUZZLES_SOLVED))); }
+  catch(e){ /* ignore */ }
+}
+function loadPuzzlesSolved(){
+  try{
+    const raw=localStorage.getItem(PUZZLES_KEY);
+    if(raw) PUZZLES_SOLVED=new Set(JSON.parse(raw));
+  }catch(e){ /* ignore corrupt/unavailable storage */ }
+}
+
+function getPositions(){
+  const pos={};
+  for(let r=0;r<GR;r++) for(let c=0;c<GC;c++){ const id=state[r][c]; if(id) pos[id]=[r,c]; }
+  return pos;
+}
+
+const ROOM_PUZZLES=[
+  {
+    id:'bedroom-coffin', room:'bedroom', title:'The Coffin Position', emoji:'🛏',
+    prompt:"This bed is backed by a solid wall — good — but it's also sitting directly in line with the door. That's feng shui's classic \"coffin position\", and it drains sleep chi. Move the bed so it's no longer in a straight line from the door.",
+    hint:'Keep the bed against a wall — just shift it to a different column so it lines up with a different part of the door-facing wall.',
+    solvedMsg:"The bed is out of the door's direct line now — much calmer sleep chi.",
+    gr:6, gc:6,
+    layout:[{id:'door',r:5,c:2},{id:'bed',r:0,c:2}],
+    checkSolved:(pos)=> !!(pos.bed && pos.door && !sameLine(pos.bed,pos.door))
+  },
+  {
+    id:'bedroom-mirror', room:'bedroom', title:'Mirror Facing the Bed', emoji:'🪞',
+    prompt:"This vanity mirror sits directly in line with the bed. A mirror facing the bed is said to double restless energy and disrupt sleep. Reposition either piece so they're no longer in line.",
+    hint:'Move the mirror to a different row than the bed — a side wall works well.',
+    solvedMsg:'The mirror no longer faces the bed — restful sleep chi restored.',
+    gr:6, gc:6,
+    layout:[{id:'door',r:5,c:2},{id:'bed',r:0,c:1},{id:'mirror',r:0,c:4}],
+    checkSolved:(pos)=> !!(pos.bed && pos.mirror && !sameLine(pos.bed,pos.mirror))
+  },
+  {
+    id:'living-floating-sofa', room:'living', title:'The Floating Sofa', emoji:'🛋',
+    prompt:"This sofa is floating in the middle of the room with no wall behind it — there's no support for the household's gathering chi. Move it back against a wall.",
+    hint:'Slide the sofa to any edge row or column of the grid.',
+    solvedMsg:"The sofa's backed by a solid wall now — a much more secure gathering point.",
+    gr:6, gc:6,
+    layout:[{id:'door',r:5,c:2},{id:'sofa',r:2,c:2}],
+    checkSolved:(pos)=> !!(pos.sofa && edge(pos.sofa))
+  },
+  {
+    id:'office-desk-door', room:'office', title:'Desk in the Line of Fire', emoji:'🖥',
+    prompt:"This desk is backed by a wall, but it's also directly in line with the door — distracting, and undermines the command position. Offset it so it's out of the door's direct line.",
+    hint:'Keep the desk against the same wall — just shift it to a different column.',
+    solvedMsg:"The desk is out of the door's direct line — a stronger command position.",
+    gr:6, gc:6,
+    layout:[{id:'door',r:5,c:2},{id:'desk',r:0,c:2}],
+    checkSolved:(pos)=> !!(pos.desk && pos.door && !sameLine(pos.desk,pos.door))
+  },
+  {
+    id:'kitchen-fire-water', room:'kitchen', title:'Fire Meets Water', emoji:'🍳',
+    prompt:"The stove and sink are sitting right next to each other — fire and water in direct conflict, said to destroy wealth chi. Separate them.",
+    hint:'Move the stove or the sink so they\'re at least two squares apart in every direction.',
+    solvedMsg:'Stove and sink are well separated now — fire and water are no longer in conflict.',
+    gr:6, gc:6,
+    layout:[{id:'door',r:5,c:2},{id:'stove',r:2,c:2},{id:'sink',r:2,c:3}],
+    checkSolved:(pos)=> !!(pos.stove && pos.sink && !adjacent(pos.stove,pos.sink))
+  },
+  {
+    id:'bathroom-toilet-view', room:'bathroom', title:'Toilet in Full View', emoji:'🚿',
+    prompt:'Open this bathroom door and the toilet is the first thing you see — chi (and wealth) drains straight out. Move it out of the door\'s direct line.',
+    hint:'Shift the toilet to a different column than the door.',
+    solvedMsg:"The toilet's out of the door's direct line now — chi stays contained.",
+    gr:6, gc:6,
+    layout:[{id:'door',r:5,c:2},{id:'toilet',r:0,c:2}],
+    checkSolved:(pos)=> !!(pos.toilet && pos.door && !sameLine(pos.toilet,pos.door))
+  }
+];
+
+let PUZZLE_CATEGORY='room';
+
+function setPuzzleCategory(cat){
+  PUZZLE_CATEGORY=cat;
+  document.getElementById('pcatRoom').classList.toggle('on',cat==='room');
+  document.getElementById('pcatBetween').classList.toggle('on',cat==='between');
+  document.getElementById('brPlayArea').classList.add('hidden');
+  document.getElementById('puzzleBrowse').classList.remove('hidden');
+  BR_ACTIVE=null;
+  renderPuzzleList();
+}
+
+function renderPuzzleList(){
+  document.getElementById('puzzleBrowse').classList.remove('hidden');
+  document.getElementById('brPlayArea').classList.add('hidden');
+  const list=PUZZLE_CATEGORY==='room'?ROOM_PUZZLES:BETWEEN_ROOM_PUZZLES;
+  const solvedCount=list.filter(p=>PUZZLES_SOLVED.has(p.id)).length;
+  document.getElementById('puzzleProgress').textContent=`${solvedCount} / ${list.length} solved`;
+  if(PUZZLE_CATEGORY==='room'){
+    document.getElementById('puzzleList').innerHTML=list.map(p=>{
+      const solved=PUZZLES_SOLVED.has(p.id);
+      return `<div class="puzzle-card ${solved?'solved':''}">
+        <div class="puzzle-card-top">
+          <span class="puzzle-card-em">${p.emoji}</span>
+          <div>
+            <div class="puzzle-card-title">${p.title}${solved?' ✓':''}</div>
+            <div class="puzzle-card-room">${ROOMS[p.room].name}</div>
+          </div>
+        </div>
+        <button class="puzzle-play-btn" onclick="playPuzzle('${p.id}')">${solved?'↺ Play Again':'▶ Play'}</button>
+      </div>`;
+    }).join('');
+  } else {
+    document.getElementById('puzzleList').innerHTML=list.map(p=>{
+      const solved=PUZZLES_SOLVED.has(p.id);
+      return `<div class="puzzle-card ${solved?'solved':''}">
+        <div class="puzzle-card-top">
+          <span class="puzzle-card-em">${p.emoji}</span>
+          <div>
+            <div class="puzzle-card-title">${p.title}${solved?' ✓':''}</div>
+            <div class="puzzle-card-room">Between Rooms</div>
+          </div>
+        </div>
+        <button class="puzzle-play-btn" onclick="playBetweenRoomPuzzle('${p.id}')">${solved?'↺ Play Again':'▶ Play'}</button>
+      </div>`;
+    }).join('');
+  }
+}
+
+function playPuzzle(id){
+  const p=ROOM_PUZZLES.find(x=>x.id===id);
+  if(!p) return;
+  roomType=p.room;
+  buildCUR();
+  renderCards();
+  document.getElementById('hRoom').textContent='— '+ROOMS[p.room].name+' Puzzle';
+  GR=p.gr; GC=p.gc;
+  state=Array.from({length:GR},()=>Array(GC).fill(null));
+  p.layout.forEach(item=>{ state[item.r][item.c]=item.id; });
+  ACTIVE_PUZZLE=p;
+  clearPick();
+  document.getElementById('infoCard').classList.add('hidden');
+  document.getElementById('puzzleResult').classList.add('hidden');
+  document.getElementById('puzzleResult').innerHTML='';
+  document.getElementById('pbHintL').classList.add('hidden');
+  goTab(1);
+  calcScore();
+  renderPuzzleBanner();
+}
+
+function renderPuzzleBanner(){
+  const bannerL=document.getElementById('puzzleBannerLayout');
+  const bannerA=document.getElementById('puzzleBannerAnalysis');
+  const sizeBar=document.getElementById('sizeBar');
+  if(!ACTIVE_PUZZLE){
+    bannerL.classList.add('hidden');
+    bannerA.classList.add('hidden');
+    sizeBar.classList.remove('hidden');
+    return;
+  }
+  bannerL.classList.remove('hidden');
+  bannerA.classList.remove('hidden');
+  sizeBar.classList.add('hidden');
+  document.getElementById('pbTitleL').textContent='🧩 '+ACTIVE_PUZZLE.title;
+  document.getElementById('pbPromptL').textContent=ACTIVE_PUZZLE.prompt;
+  document.getElementById('pbHintL').textContent='💡 '+ACTIVE_PUZZLE.hint;
+  document.getElementById('pbTitleA').textContent='🧩 '+ACTIVE_PUZZLE.title;
+}
+
+function togglePuzzleHint(){
+  document.getElementById('pbHintL').classList.toggle('hidden');
+}
+
+function checkPuzzleSolution(){
+  if(!ACTIVE_PUZZLE) return;
+  calcScore();
+  const solved=ACTIVE_PUZZLE.checkSolved(getPositions());
+  goTab(2);
+  const panel=document.getElementById('puzzleResult');
+  if(solved){
+    PUZZLES_SOLVED.add(ACTIVE_PUZZLE.id);
+    savePuzzlesSolved();
+    panel.className='puzzle-result solved';
+    panel.innerHTML=`🎉 <b>Solved!</b> ${ACTIVE_PUZZLE.solvedMsg}<br><button class="puzzle-btn go" onclick="exitPuzzle()">← More Puzzles</button>`;
+  } else {
+    panel.className='puzzle-result';
+    panel.innerHTML=`Not quite yet. ${ACTIVE_PUZZLE.hint}<br><button class="puzzle-btn" onclick="goTab(1)">← Back to Room</button>`;
+  }
+  panel.classList.remove('hidden');
+  renderPuzzleBanner();
+}
+
+function exitPuzzle(){
+  ACTIVE_PUZZLE=null;
+  document.getElementById('puzzleResult').classList.add('hidden');
+  document.getElementById('puzzleResult').innerHTML='';
+  renderPuzzleBanner();
+  document.getElementById('hRoom').textContent='— '+ROOMS[roomType].name;
+  goTab(4);
+}
+
+loadPuzzlesSolved();
+
+// ═════════════════════════════════════════════════════════════════
+// ── BETWEEN-ROOMS PUZZLES — v1 ───────────────────────────────────────
+// Reuses the existing 3x3 bagua grid pattern (ZONE_GRID/ZONE_LABEL,
+// same layout as the room-level bagua display) rather than building a
+// new floor-plan visual. A puzzle places 1-2 rooms into cells of the
+// grid with a room-to-room placement problem; the player drags rooms
+// between cells to fix it, using the same drag engine as the
+// furniture grid above. Solved state shares the PUZZLES_SOLVED set
+// with the room-level puzzles.
+// ═════════════════════════════════════════════════════════════════
+
+const BR_TYPE_EMOJI={kitchen:'🍳',bathroom:'🚿',bedroom:'🛏',living:'🛋'};
+
+function chebDist(a,b){ return Math.max(Math.abs(a[0]-b[0]),Math.abs(a[1]-b[1])); }
+
+const BETWEEN_ROOM_PUZZLES=[
+  {
+    id:'br-kitchen-bathroom', title:'Too Close for Comfort', emoji:'🍳',
+    prompt:"This kitchen and bathroom are sharing the same area — no wall between them, a genuine fire/water clash. Drag one of them to a different area so they're no longer touching, even diagonally.",
+    hint:"Opposite corners of the grid, or opposite edges with the centre between them, both work.",
+    solvedMsg:'Kitchen and bathroom are no longer touching — the fire/water clash is resolved.',
+    doorCell:null,
+    rooms:[{id:'k1',type:'kitchen',cell:[0,0]},{id:'b1',type:'bathroom',cell:[0,0]}],
+    checkSolved:(pos)=> chebDist(pos.k1,pos.b1)>=2
+  },
+  {
+    id:'br-bathroom-entrance', title:'Bathroom at the Door', emoji:'🚪',
+    prompt:"This bathroom sits right at the front door — chi (and wealth) can drain straight back out as soon as it enters. Drag the bathroom away from the entrance.",
+    hint:'Any area away from the door works — the further, the better.',
+    solvedMsg:'The bathroom is well clear of the entrance now — chi stays contained.',
+    doorCell:[0,1],
+    rooms:[{id:'b1',type:'bathroom',cell:[0,1]}],
+    checkSolved:(pos)=> !(pos.b1[0]===0 && pos.b1[1]===1)
+  },
+  {
+    id:'br-kitchen-centre', title:'Fire at the Heart', emoji:'🔥',
+    prompt:"This kitchen sits in the very centre of the home — fire chi at the heart of the house can unsettle the whole household's balance. Move it out of the centre.",
+    hint:'Any area except the centre cell works.',
+    solvedMsg:"The kitchen's out of the centre now — a calmer, more stable household balance.",
+    doorCell:null,
+    rooms:[{id:'k1',type:'kitchen',cell:[1,1]}],
+    checkSolved:(pos)=> !(pos.k1[0]===1 && pos.k1[1]===1)
+  }
+];
+
+let BR_ACTIVE=null;         // the puzzle definition currently being played
+let BR_POS={};              // {roomId:[r,c]} current positions during play
+
+function playBetweenRoomPuzzle(id){
+  const p=BETWEEN_ROOM_PUZZLES.find(x=>x.id===id);
+  if(!p) return;
+  BR_ACTIVE=p;
+  BR_POS={};
+  p.rooms.forEach(r=>{ BR_POS[r.id]=[...r.cell]; });
+  document.getElementById('puzzleBrowse').classList.add('hidden');
+  document.getElementById('brPlayArea').classList.remove('hidden');
+  document.getElementById('brTitle').textContent='🧩 '+p.title;
+  document.getElementById('brPrompt').textContent=p.prompt;
+  document.getElementById('brHint').textContent='💡 '+p.hint;
+  document.getElementById('brHint').classList.add('hidden');
+  document.getElementById('brResult').classList.add('hidden');
+  document.getElementById('brResult').innerHTML='';
+  renderBetweenRoomsGrid();
+}
+
+function renderBetweenRoomsGrid(){
+  const wrap=document.getElementById('bgGrid');
+  wrap.innerHTML=ZONE_GRID.map((row,r)=>row.map((z,c)=>
+    `<div class="bg-cell" data-r="${r}" data-c="${c}" id="bgcell-${r}-${c}">
+       <div class="bg-lbl">${ZONE_LABEL[z]}</div>
+     </div>`
+  ).join('')).join('');
+
+  if(BR_ACTIVE.doorCell){
+    const [dr,dc]=BR_ACTIVE.doorCell;
+    const cellEl=document.getElementById(`bgcell-${dr}-${dc}`);
+    const doorMark=document.createElement('div');
+    doorMark.className='bg-door';
+    doorMark.textContent='🚪';
+    cellEl.appendChild(doorMark);
+  }
+
+  BR_ACTIVE.rooms.forEach(r=>{
+    const [rr,rc]=BR_POS[r.id];
+    const cellEl=document.getElementById(`bgcell-${rr}-${rc}`);
+    const piece=document.createElement('div');
+    piece.className='bg-piece';
+    piece.textContent=BR_TYPE_EMOJI[r.type];
+    cellEl.insertBefore(piece,cellEl.firstChild);
+    makeDraggable(piece,BR_TYPE_EMOJI[r.type],'.bg-cell',
+      ()=>{},
+      (cellEl2)=>{
+        if(cellEl2){ BR_POS[r.id]=[+cellEl2.dataset.r,+cellEl2.dataset.c]; }
+        renderBetweenRoomsGrid();
+      }
+    );
+  });
+}
+
+function toggleBrHint(){
+  document.getElementById('brHint').classList.toggle('hidden');
+}
+
+function checkBetweenRoomSolution(){
+  if(!BR_ACTIVE) return;
+  const solved=BR_ACTIVE.checkSolved(BR_POS);
+  const panel=document.getElementById('brResult');
+  if(solved){
+    PUZZLES_SOLVED.add(BR_ACTIVE.id);
+    savePuzzlesSolved();
+    panel.className='puzzle-result solved';
+    panel.innerHTML=`🎉 <b>Solved!</b> ${BR_ACTIVE.solvedMsg}<br><button class="puzzle-btn go" onclick="exitBetweenRoomPuzzle()">← More Puzzles</button>`;
+  } else {
+    panel.className='puzzle-result';
+    panel.innerHTML=`Not quite yet. ${BR_ACTIVE.hint}`;
+  }
+  panel.classList.remove('hidden');
+}
+
+function exitBetweenRoomPuzzle(){
+  BR_ACTIVE=null;
+  document.getElementById('brPlayArea').classList.add('hidden');
+  document.getElementById('puzzleBrowse').classList.remove('hidden');
+  renderPuzzleList();
+}
+</script>
+</body>
+</html>
